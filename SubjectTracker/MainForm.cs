@@ -18,7 +18,6 @@ namespace SubjectTracker
             ReadingDB();
             subjectPanel.Visible = false;
             workPanel.Visible = false;
-            leftWorkPanel.Visible = false;
         }
 
         void ReadingDB()
@@ -106,7 +105,6 @@ namespace SubjectTracker
                     curChangeCB.Checked = senderGrid.Rows[e.RowIndex].Cells[4].Value.ToString() == "—" ? false : true;
                     subjectPanel.Visible = true;
                     workPanel.Visible = false;
-                    leftWorkPanel.Visible = false;
                 }
                 else if (e.ColumnIndex == 1)
                 {
@@ -130,9 +128,8 @@ namespace SubjectTracker
             if (dataRowCollection.Count > 0)
             {
                 workPanel.Visible = true;
-                leftWorkPanel.Visible = true;
                 subjectPanel.Visible = false;
-                workPanel.Columns.Clear();
+                workTable.Columns.Clear();
                 DataGridViewComboBoxColumn[] column = new DataGridViewComboBoxColumn[dataRowCollection.Count];
                 string[] row = new string[dataRowCollection.Count];
                 for (int i = 0; i < dataRowCollection.Count; i++)
@@ -144,8 +141,8 @@ namespace SubjectTracker
                     column[i].Items.Add("Сдано");
                     row[i] = dataRowCollection[i].ItemArray[0].ToString();
                 }
-                workPanel.Columns.AddRange(column);
-                workPanel.Rows.Add(row);
+                workTable.Columns.AddRange(column);
+                workTable.Rows.Add(row);
             }
         }
 
@@ -167,11 +164,8 @@ namespace SubjectTracker
             if (senderGrid.Columns[e.ColumnIndex] is DataGridViewComboBoxColumn)
             {
                 DataGridViewRow row = senderGrid.Rows[e.RowIndex];
-
                 string cell = row.Cells[e.ColumnIndex].Value.ToString();
-
                 string type = e.ColumnIndex == 3 ? "con_stage" : "cur_stage";
-
                 db.UpdateConCur(cell, row.Cells[0].Value.ToString(), type);
             }
         }
@@ -203,10 +197,9 @@ namespace SubjectTracker
             DownPanelMenuItem.Visible = false;
             subjectPanel.Visible = false;
             workPanel.Visible = false;
-            leftWorkPanel.Visible = false;
         }
 
-        void workPanel_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        void workTable_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
             DataGridView senderGrid = (DataGridView)sender;
             string newStage = senderGrid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
