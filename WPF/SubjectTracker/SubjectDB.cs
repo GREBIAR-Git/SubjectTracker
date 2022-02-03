@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
 using System.IO;
+using System.Text;
 
 namespace SubjectTracker
 {
@@ -98,21 +99,26 @@ namespace SubjectTracker
         }
 
         void Insert(SQLiteConnection connection, string table, string name, params string[] values)
-        {
-            SQLiteCommand command = new SQLiteCommand();
-            command.Connection = connection;
-            command.CommandText = "INSERT INTO " + table + " (" + name + ")VALUES";
-            foreach (string value in values)
+        {     
+            if(values.Length>0)
             {
-                command.CommandText += "(" + value + "),";
-            }
-            int last = command.CommandText.Length - 1;
-            if (command.CommandText[last] == ',')
-            {
-                command.CommandText = command.CommandText.Remove(last);
 
+                StringBuilder insert = new StringBuilder("INSERT INTO " + table + " (" + name + ")VALUES");
+                foreach (string value in values)
+                {
+                    insert.Append("(" + value + "),");
+                }
+                int last = insert.Length - 1;
+                if (insert[last] == ',')
+                {
+                    insert.Remove(last,1);
+
+                }
+                SQLiteCommand command = new SQLiteCommand();
+                command.Connection = connection;
+                command.CommandText = insert.ToString();
+                command.ExecuteNonQuery();
             }
-            command.ExecuteNonQuery();
         }
 
         DataRowCollection Query(SQLiteConnection connection, string query)
