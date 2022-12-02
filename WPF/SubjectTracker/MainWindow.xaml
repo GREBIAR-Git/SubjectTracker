@@ -9,138 +9,6 @@
         xmlns:System="clr-namespace:System;assembly=System.Runtime" x:Name="win" x:Class="SubjectTracker.MainWindow"
         mc:Ignorable="d"
         Title="Осталось сдать" Height="450" Width="800" MinWidth="400">
-    <Window.Resources>
-        <Style x:Key="TBlStandart" TargetType="{x:Type TextBlock}">
-            <Setter Property="TextAlignment" Value="Center"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="Margin" Value="0,5,0,2.5"/>
-            <Setter Property="FontFamily" Value="Serif"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Foreground" Value="White"/>
-        </Style>
-        <Style x:Key="TBStandart" TargetType="{x:Type TextBox}">
-            <Setter Property="TextAlignment" Value="Center"/>
-            <Setter Property="Height" Value="19"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="FontFamily" Value="Serif"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Margin" Value="5,0.5,5,1"/>
-            <Setter Property="Padding" Value="0.5"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="BorderBrush" Value="LightGray"/>
-            <Setter Property="Background" Value="White"/>
-            <Style.Resources>
-                <Style TargetType="Border">
-                    <Setter Property="CornerRadius" Value="5"/>
-                </Style>
-            </Style.Resources>
-        </Style>
-        <Style x:Key="CBStandart" TargetType="{x:Type CheckBox}">
-            <Setter Property="Margin" Value="0,2.5,0,5"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="HorizontalAlignment" Value="Center"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Style.Resources>
-                <Style TargetType="Border">
-                    <Setter Property="CornerRadius" Value="3"/>
-                </Style>
-            </Style.Resources>
-        </Style>
-        <Style x:Key="DGStandart" TargetType="{x:Type DataGrid}">
-            <Setter Property="Background" Value="#8daacc"/>
-            <Setter Property="RowBackground" Value="#8daacc"/>
-            <Setter Property="AutoGenerateColumns" Value="False"/>
-            <Setter Property="HorizontalScrollBarVisibility" Value="Hidden"/>
-            <Setter Property="CanUserAddRows" Value="False"/>
-            <Setter Property="CanUserDeleteRows" Value="False"/>
-            <Setter Property="CanUserResizeColumns" Value="False"/>
-            <Setter Property="CanUserResizeRows" Value="False"/>
-            <Setter Property="RowHeaderWidth" Value="0"/>
-        </Style>
-        <Style x:Key="CoBStandart" TargetType="{x:Type ComboBox}">
-            <Setter Property="FontFamily" Value="Serif"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Foreground" Value="Black"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ComboBox">
-                        <Grid>
-                            <ToggleButton IsChecked="{Binding Path=IsDropDownOpen,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}" >
-                                <ToggleButton.Template>
-                                    <ControlTemplate>
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="5*" />
-                                                <ColumnDefinition Width="*" />
-                                            </Grid.ColumnDefinitions>
-                                            <Border x:Name="Border"  Grid.ColumnSpan="2" CornerRadius="3" Background="#335e8f" BorderBrush="Black" BorderThickness="1" />
-                                            <Border Grid.Column="0" CornerRadius="5,0,0,5"  Margin="1"  Background="AliceBlue"  BorderBrush="Black" BorderThickness="0,0,1,0" />
-                                            <Path x:Name="Arrow" Grid.Column="1"  Fill="White" HorizontalAlignment="Center" VerticalAlignment="Center" Data="M 0 0 L 4 4 L 8 0 Z"/>
-                                        </Grid>
-                                        <ControlTemplate.Triggers>
-                                            <Trigger Property="ToggleButton.IsMouseOver" Value="true">
-                                                <Setter TargetName="Border" Property="Background" Value="DarkGoldenrod" />
-                                            </Trigger>
-                                            <Trigger Property="ToggleButton.IsChecked" Value="true">
-                                                <Setter TargetName="Border" Property="Background" Value="DarkGoldenrod" />
-                                            </Trigger>
-                                        </ControlTemplate.Triggers>
-                                    </ControlTemplate>
-                                </ToggleButton.Template>
-                            </ToggleButton>
-                            <ContentPresenter Name="ContentSite" IsHitTestVisible="False" Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" Margin="3"  />
-                            <Popup Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="True"  Focusable="False" PopupAnimation="Slide">
-                                <Grid Name="DropDown" SnapsToDevicePixels="True" MinWidth="{TemplateBinding ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
-                                    <Border x:Name="DropDownBorder" Background="#4a76a8" />
-                                    <ScrollViewer SnapsToDevicePixels="True">
-                                        <StackPanel IsItemsHost="True"/>
-                                    </ScrollViewer>
-                                </Grid>
-                            </Popup>
-                        </Grid>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style x:Key="MIStandart" TargetType="{x:Type MenuItem}">
-            <Setter Property="VerticalAlignment" Value="Bottom"/>
-            <Setter Property="FontFamily" Value="Serif"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Height" Value="20"/>
-        </Style>
-        <Style x:Key="BuStandart" TargetType="{x:Type Button}">
-            <Style.Resources>
-                <Style TargetType="Border">
-                    <Setter Property="CornerRadius" Value="3"/>
-                </Style>
-            </Style.Resources>
-            <Style.Setters>
-                <Setter Property="Background" Value="#335e8f"/>
-                <Setter Property="FontFamily" Value="Serif"/>
-                <Setter Property="FontSize" Value="14"/>
-                <Setter Property="FontWeight" Value="Bold"/>
-                <Setter Property="Foreground" Value="White"/>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type Button}">
-                            <Border Background="{TemplateBinding Background}">
-                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style.Setters>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="DarkGoldenrod"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-    </Window.Resources>
     <Grid x:Name="table">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="70*"/>
@@ -250,7 +118,7 @@
                 <DataGridTemplateColumn Header="Контрольная" Width="21.4*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <ComboBox ItemsSource="{Binding defaultComboBox}" SelectedItem="{Binding Con, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource CoBStandart}" DropDownOpened="ComboBox_DropDownOpened" SelectionChanged="ComboBoxCon_SelectionChanged"/>
+                            <ComboBox ItemsSource="{Binding DefaultComboBox}" SelectedItem="{Binding Con, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource CoBStandart}" DropDownOpened="ComboBox_DropDownOpened" SelectionChanged="ComboBoxCon_SelectionChanged"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -258,7 +126,7 @@
                 <DataGridTemplateColumn Header="Курсовая" Width="21.4*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <ComboBox ItemsSource="{Binding defaultComboBox}" SelectedItem="{Binding Cur, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource CoBStandart}" DropDownOpened="ComboBox_DropDownOpened" SelectionChanged="ComboBoxCur_SelectionChanged"/>
+                            <ComboBox ItemsSource="{Binding DefaultComboBox}" SelectedItem="{Binding Cur, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource CoBStandart}" DropDownOpened="ComboBox_DropDownOpened" SelectionChanged="ComboBoxCur_SelectionChanged"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -292,6 +160,7 @@
         </Grid>
         <Grid Grid.Row="1" Grid.Column="1" Grid.RowSpan="4" Background="#8daacc">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="11"/>
                 <ColumnDefinition Width="100*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
@@ -299,9 +168,16 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="100*"/>
             </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" Grid.Column="0" Margin="2,5,2,0" x:Name="NameWork" Text="Название предмета: " TextWrapping="WrapWithOverflow" Style="{StaticResource TBlStandart}"/>
-            <TextBlock Grid.Row="1" Grid.Column="0" Margin="2,0,2,5" x:Name="TypeWork" Text="Тип работы: " TextWrapping="WrapWithOverflow" Style="{StaticResource TBlStandart}"/>
-            <DataGrid Grid.Row="2" Grid.Column="0" x:Name="dataWork" Style="{StaticResource DGStandart}">
+            <Button Grid.Row="0" Grid.RowSpan="3" Grid.Column="0" Margin="0" BorderThickness="0"  Padding="0" Style="{StaticResource BuStandartWB}" Click="SubjectPanelHide">
+                <Grid VerticalAlignment="Center">
+                    <Polygon Fill="White" Points="1, 7, 6, 0, 6, 14" />
+                    <Polygon Fill="White" Points="1, 32, 6, 25, 6, 39" />
+                    <Polygon Fill="White" Points="1, 57, 6, 50, 6, 64" />
+                </Grid>
+            </Button>
+            <TextBlock Grid.Row="0" Grid.Column="1" Margin="2,5,2,0" x:Name="NameWork" Text="Название предмета: " TextWrapping="WrapWithOverflow" Style="{StaticResource TBlStandart}"/>
+            <TextBlock Grid.Row="1" Grid.Column="1" Margin="2,0,2,5" x:Name="TypeWork" Text="Тип работы: " TextWrapping="WrapWithOverflow" Style="{StaticResource TBlStandart}"/>
+            <DataGrid Grid.Row="2" Grid.Column="1" x:Name="dataWork" Style="{StaticResource DGStandart}">
                 <DataGrid.Resources>
                     <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
                         <Setter Property="Background" Value="#4a76a8" />
@@ -323,10 +199,17 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="Стадия" Width="80*">
+                    <DataGridTemplateColumn Header="Стадия" Width="60*">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <ComboBox ItemsSource="{Binding defaultComboBox}" SelectedItem="{Binding Stage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource CoBStandart}" SelectionChanged="ComboBoxWork_SelectionChanged"/>
+                                <ComboBox ItemsSource="{Binding DefaultComboBox}" SelectedItem="{Binding Stage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource CoBStandart}" SelectionChanged="ComboBoxWork_SelectionChanged"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="Файл" Width="20*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Style="{StaticResource BuStandart}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>

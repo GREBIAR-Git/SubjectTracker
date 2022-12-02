@@ -9,8 +9,8 @@ namespace SubjectTracker
 {
     internal class SubjectDB
     {
-        string nameDB;
-        string pathDB;
+        readonly string nameDB;
+        readonly string pathDB;
 
         public SubjectDB()
         {
@@ -23,13 +23,14 @@ namespace SubjectTracker
             if (!File.Exists(pathDB))
             {
                 SQLiteConnection.CreateFile(pathDB);
-                using (SQLiteConnection connection = new SQLiteConnection("Data Source = " + pathDB))
+                using (SQLiteConnection connection = new("Data Source = " + pathDB))
                 {
                     connection.Open();
-                    SQLiteCommand command = new SQLiteCommand();
-                    command.Connection = connection;
+                    SQLiteCommand command = new()
+                    {
+                        Connection = connection,
 
-                    command.CommandText = "CREATE TABLE IF NOT EXISTS View(" +
+                        CommandText = "CREATE TABLE IF NOT EXISTS View(" +
                         "id_view INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
                         "name TEXT NOT NULL);" +
 
@@ -53,7 +54,8 @@ namespace SubjectTracker
                         "id_subject INTEGER NOT NULL," +
                         "FOREIGN KEY(id_stage) REFERENCES Stage(id_stage) ON DELETE CASCADE," +
                         "FOREIGN KEY(id_subject) REFERENCES Subject(id_subject) ON DELETE CASCADE," +
-                        "FOREIGN KEY(id_view) REFERENCES View(id_view) ON DELETE CASCADE);";
+                        "FOREIGN KEY(id_view) REFERENCES View(id_view) ON DELETE CASCADE);"
+                    };
                     command.ExecuteNonQuery();
                     Insert(connection, "View", "name", "'Лабораторная'", "'Практическая'");
                     Insert(connection, "Stage", "name", "'—'", "'Не сделано'", "'Сделано'", "'Сдано'");
@@ -63,7 +65,7 @@ namespace SubjectTracker
 
         public bool AddSubject(string name, int countLab, int countPra, bool con, bool cur)
         {
-            using (SQLiteConnection connection = new SQLiteConnection("Data Source = " + pathDB))
+            using (SQLiteConnection connection = new("Data Source = " + pathDB))
             {
                 connection.Open();
                 if (Query(connection, "SELECT * FROM Subject WHERE name='" + name + "'").Count == 0)
@@ -79,12 +81,12 @@ namespace SubjectTracker
             return false;
         }
 
-        void InsertWorks(SQLiteConnection connection, string view, string name, int count)
+        static void InsertWorks(SQLiteConnection connection, string view, string name, int count)
         {
             InsertWorks(connection, view, name, 1, count + 1);
         }
 
-        void InsertWorks(SQLiteConnection connection, string view, string name, int from, int to)
+        static void InsertWorks(SQLiteConnection connection, string view, string name, int from, int to)
         {
             string idView = Query(connection, "SELECT * FROM View WHERE name='" + view + "'")[0].ItemArray[0].ToString();
             string idSubject = Query(connection, "SELECT * FROM Subject WHERE name='" + name + "'")[0].ItemArray[0].ToString();
@@ -98,12 +100,12 @@ namespace SubjectTracker
             Insert(connection, "Works", "number,id_stage,id_view,id_subject", values);
         }
 
-        void Insert(SQLiteConnection connection, string table, string name, params string[] values)
-        {     
-            if(values.Length>0)
+        static void Insert(SQLiteConnection connection, string table, string name, params string[] values)
+        {
+            if (values.Length > 0)
             {
 
-                StringBuilder insert = new StringBuilder("INSERT INTO " + table + " (" + name + ")VALUES");
+                StringBuilder insert = new("INSERT INTO " + table + " (" + name + ")VALUES");
                 foreach (string value in values)
                 {
                     insert.Append("(" + value + "),");
@@ -111,31 +113,33 @@ namespace SubjectTracker
                 int last = insert.Length - 1;
                 if (insert[last] == ',')
                 {
-                    insert.Remove(last,1);
+                    insert.Remove(last, 1);
 
                 }
-                SQLiteCommand command = new SQLiteCommand();
-                command.Connection = connection;
-                command.CommandText = insert.ToString();
+                SQLiteCommand command = new()
+                {
+                    Connection = connection,
+                    CommandText = insert.ToString()
+                };
                 command.ExecuteNonQuery();
             }
         }
 
-        DataRowCollection Query(SQLiteConnection connection, string query)
+        static DataRowCollection Query(SQLiteConnection connection, string query)
         {
-            SQLiteCommand command = new SQLiteCommand();
-            command.Connection = connection;
-            DataTable dTable = new DataTable();
-            SQLiteDataAdapter adapter = new SQLiteDataAdapter(query, connection);
+            DataTable dTable = new();
+            SQLiteDataAdapter adapter = new(query, connection);
             adapter.Fill(dTable);
             return dTable.Rows;
         }
 
         public List<string[]> GeneralInformation()
         {
-            List<string[]> info = new List<string[]>();
-            info.Add(new string[] { });
-            using (SQLiteConnection connection = new SQLiteConnection("Data Source = " + pathDB))
+            List<string[]> info = new()
+            {
+                Array.Empty<string>()
+            };
+            using (SQLiteConnection connection = new("Data Source = " + pathDB))
             {
                 connection.Open();
                 DataRowCollection allName = Query(connection, "SELECT id_subject,name,con_stage,cur_stage FROM Subject");
@@ -152,7 +156,7 @@ namespace SubjectTracker
             return info;
         }
 
-        int CountDoneSubject(SQLiteConnection connection, out int countAll, string name, string type)
+        static int CountDoneSubject(SQLiteConnection connection, out int countAll, string name, string type)
         {
             DataRowCollection all = AllWorks(connection, name, type);
             int done = 0;
@@ -167,18 +171,20 @@ namespace SubjectTracker
             return done;
         }
 
-        DataRowCollection AllWorks(SQLiteConnection connection, string name, string type)
+        static DataRowCollection AllWorks(SQLiteConnection connection, string name, string type)
         {
             return Query(connection, "SELECT st.name FROM Works w JOIN View v USING(id_view) JOIN Subject su USING(id_subject) JOIN Stage st USING(id_stage) WHERE v.name='" + type + "' AND su.name='" + name + "'");
         }
 
         public void UpdateConCur(string value, string name, string type)
         {
-            using (SQLiteConnection connection = new SQLiteConnection("Data Source = " + pathDB))
+            using (SQLiteConnection connection = new("Data Source = " + pathDB))
             {
                 connection.Open();
-                SQLiteCommand command = new SQLiteCommand();
-                command.Connection = connection;
+                SQLiteCommand command = new()
+                {
+                    Connection = connection
+                };
                 string id = Query(connection, "SELECT id_stage FROM Stage WHERE name='" + value + "'")[0].ItemArray[0].ToString();
                 command.CommandText = "UPDATE Subject SET " + type + "=" + id + " WHERE name='" + name + "'";
                 command.ExecuteNonQuery();
@@ -187,12 +193,14 @@ namespace SubjectTracker
 
         public void UpdateConCur(string value, int id, string type)
         {
-            using (SQLiteConnection connection = new SQLiteConnection("Data Source = " + pathDB))
+            using (SQLiteConnection connection = new("Data Source = " + pathDB))
             {
                 connection.Open();
-                SQLiteCommand command = new SQLiteCommand();
-                command.Connection = connection;
-                command.CommandText = "UPDATE Subject SET " + type + "=" + value + " WHERE id_subject=" + id;
+                SQLiteCommand command = new()
+                {
+                    Connection = connection,
+                    CommandText = "UPDATE Subject SET " + type + "=" + value + " WHERE id_subject=" + id
+                };
                 command.ExecuteNonQuery();
             }
         }
@@ -200,7 +208,7 @@ namespace SubjectTracker
 
         public void UpdateSubject(string name, string lab, string pra, bool con, bool cur)
         {
-            using (SQLiteConnection connection = new SQLiteConnection("Data Source = " + pathDB))
+            using (SQLiteConnection connection = new("Data Source = " + pathDB))
             {
                 connection.Open();
                 string idSubject = Query(connection, "SELECT * FROM Subject WHERE name='" + name + "'")[0].ItemArray[0].ToString();
@@ -210,15 +218,16 @@ namespace SubjectTracker
             }
         }
 
-        void ChangeCountWorks(SQLiteConnection connection, string idSubject, string nameSubject, string newCountWork, string nameType)
+        static void ChangeCountWorks(SQLiteConnection connection, string idSubject, string nameSubject, string newCountWork, string nameType)
         {
             string idView = Query(connection, "SELECT id_view FROM View WHERE name='" + nameType + "'")[0].ItemArray[0].ToString();
 
             int count = Query(connection, "SELECT * FROM Works WHERE id_subject=" + idSubject + " AND id_view='" + idView + "'").Count;
-            SQLiteCommand command = new SQLiteCommand();
-            command.Connection = connection;
-            int newCount = 0;
-            Int32.TryParse(newCountWork, out newCount);
+            SQLiteCommand command = new()
+            {
+                Connection = connection
+            };
+            int.TryParse(newCountWork, out int newCount);
             if (newCount != count)
             {
                 if (newCount < count)
@@ -235,8 +244,6 @@ namespace SubjectTracker
 
         void ChangeConCur(SQLiteConnection connection, string idSubject, bool con, bool cur)
         {
-            SQLiteCommand command = new SQLiteCommand();
-            command.Connection = connection;
             DataRow row = Query(connection, "SELECT con_stage,cur_stage FROM Subject WHERE id_subject=" + idSubject)[0];
             ChangeOneMainWork(con, idSubject, row[0].ToString(), "con");
             ChangeOneMainWork(cur, idSubject, row[1].ToString(), "cur");
@@ -264,13 +271,15 @@ namespace SubjectTracker
 
         public void DeleteSubject(string name)
         {
-            using (SQLiteConnection connection = new SQLiteConnection("Data Source = " + pathDB))
+            using (SQLiteConnection connection = new("Data Source = " + pathDB))
             {
                 connection.Open();
                 string idSubject = Query(connection, "SELECT id_subject FROM Subject WHERE name='" + name + "'")[0].ItemArray[0].ToString();
-                SQLiteCommand command = new SQLiteCommand();
-                command.Connection = connection;
-                command.CommandText = "DELETE FROM Subject WHERE name='" + name + "'";
+                SQLiteCommand command = new()
+                {
+                    Connection = connection,
+                    CommandText = "DELETE FROM Subject WHERE name='" + name + "'"
+                };
                 command.ExecuteNonQuery();
                 command.CommandText = "DELETE FROM Works WHERE id_subject=" + idSubject;
                 command.ExecuteNonQuery();
@@ -279,7 +288,7 @@ namespace SubjectTracker
 
         public DataRowCollection InfoWork(string name, string type)
         {
-            using (SQLiteConnection connection = new SQLiteConnection("Data Source = " + pathDB))
+            using (SQLiteConnection connection = new("Data Source = " + pathDB))
             {
                 connection.Open();
                 return AllWorks(connection, name, type);
@@ -288,11 +297,13 @@ namespace SubjectTracker
 
         public void UpdateWork(string name, string number, string type, string newStage)
         {
-            using (SQLiteConnection connection = new SQLiteConnection("Data Source = " + pathDB))
+            using (SQLiteConnection connection = new("Data Source = " + pathDB))
             {
                 connection.Open();
-                SQLiteCommand command = new SQLiteCommand();
-                command.Connection = connection;
+                SQLiteCommand command = new()
+                {
+                    Connection = connection
+                };
 
                 string idStage = "(SELECT id_stage FROM Stage WHERE name='" + newStage + "')";
                 string idSubject = "(SELECT id_subject FROM Subject WHERE name='" + name + "')";

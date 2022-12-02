@@ -2,7 +2,7 @@
 {
     internal class Subject
     {
-        public static string[] defaultComboBox { get; set; } = new string[] { "—", "Не сделано", "Сделано", "Сдано" };
+        public static string[] DefaultComboBox { get; set; } = new string[] { "—", "Не сделано", "Сделано", "Сдано" };
 
         public Subject(string name, string lab, string pra, string con, string cur)
         {

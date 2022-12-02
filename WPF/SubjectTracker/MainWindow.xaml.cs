@@ -10,9 +10,9 @@ namespace SubjectTracker
 
     public partial class MainWindow : Window
     {
-        SubjectDB db = new SubjectDB();
-        List<Subject> tableInfo;
-        List<Works> worksInfo;
+        readonly SubjectDB db = new();
+        readonly List<Subject> tableInfo;
+        readonly List<Works> worksInfo;
 
         public MainWindow()
         {
@@ -87,12 +87,11 @@ namespace SubjectTracker
             string name = addName.Text.Replace("'", "");
             if (name != String.Empty)
             {
-                int countLab, countPra;
-                if (!Int32.TryParse(addLab.Text, out countLab))
+                if (!Int32.TryParse(addLab.Text, out int countLab))
                 {
                     countLab = 0;
                 }
-                if (!Int32.TryParse(addPra.Text, out countPra))
+                if (!Int32.TryParse(addPra.Text, out int countPra))
                 {
                     countPra = 0;
                 }
@@ -120,8 +119,8 @@ namespace SubjectTracker
             changeName.Text = item.Name;
             changeLab.Text = item.Lab.Split('/').Last();
             changePra.Text = item.Pra.Split('/').Last();
-            changeCon.IsChecked = item.Con == "—" ? false : true;
-            changeCur.IsChecked = item.Cur == "—" ? false : true;
+            changeCon.IsChecked = item.Con != "—";
+            changeCur.IsChecked = item.Cur != "—";
         }
 
         void Change_Click(object sender, RoutedEventArgs e)
@@ -188,7 +187,7 @@ namespace SubjectTracker
             {
                 if (table.RowDefinitions[3].Height.IsAuto == true)
                 {
-                    changeCur.IsChecked = item.Cur == "—" ? false : true;
+                    changeCur.IsChecked = item.Cur != "—";
                 }
                 ComboboxChange(item.Cur, "cur_stage", item);
             }
@@ -201,7 +200,7 @@ namespace SubjectTracker
             {
                 if (table.RowDefinitions[3].Height.IsAuto == true)
                 {
-                    changeCon.IsChecked = item.Con == "—" ? false : true;
+                    changeCon.IsChecked = item.Con != "—";
                 }
                 ComboboxChange(item.Con, "con_stage", item);
             }
@@ -233,7 +232,6 @@ namespace SubjectTracker
             DataRowCollection dataRowCollection = db.InfoWork(name, type);
             if (dataRowCollection.Count > 0)
             {
-                string[] row = new string[dataRowCollection.Count];
                 for (int i = 0; i < dataRowCollection.Count; i++)
                 {
                     worksInfo.Add(new Works((i + 1).ToString(), dataRowCollection[i].ItemArray[0].ToString()));
@@ -251,6 +249,12 @@ namespace SubjectTracker
                 db.UpdateWork(NameWork.Text.Remove(0, 19), item.Number, TypeWork.Text.Remove(0, 14), item.Stage);
                 ReadingDB();
             }
+        }
+
+        void SubjectPanelHide(object sender, RoutedEventArgs e)
+        {
+            WorkPanelHide();
+            RightPanelMI.Visibility = Visibility.Collapsed;
         }
     }
 }

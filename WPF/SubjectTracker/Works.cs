@@ -2,7 +2,7 @@
 {
     internal class Works
     {
-        public static string[] defaultComboBox { get; set; } = new string[] { "Не сделано", "Сделано", "Сдано" };
+        public static string[] DefaultComboBox { get; set; } = new string[] { "Не сделано", "Сделано", "Сдано" };
         public Works(string number, string stage)
         {
             Number = number;
