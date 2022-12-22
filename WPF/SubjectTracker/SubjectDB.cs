@@ -125,6 +125,30 @@ namespace SubjectTracker
             }
         }
 
+       public void Reset()
+        {
+            using (SQLiteConnection connection = new("Data Source = " + pathDB))
+            {
+                connection.Open();
+                StringBuilder insert = new("delete from Subject");
+
+                SQLiteCommand command1 = new()
+                {
+                    Connection = connection,
+                    CommandText = insert.ToString()
+                };
+                command1.ExecuteNonQuery();
+                insert = new("delete from Works");
+
+                SQLiteCommand command2 = new()
+                {
+                    Connection = connection,
+                    CommandText = insert.ToString()
+                };
+                command2.ExecuteNonQuery();
+            }
+        }
+
         static DataRowCollection Query(SQLiteConnection connection, string query)
         {
             DataTable dTable = new();

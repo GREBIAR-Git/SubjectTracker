@@ -5,179 +5,85 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:col="clr-namespace:System.Collections;assembly=mscorlib"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
-        xmlns:local="clr-namespace:WpfApp1"
+        xmlns:local="clr-namespace:SubjectTracker"
         xmlns:System="clr-namespace:System;assembly=System.Runtime" x:Name="win" x:Class="SubjectTracker.MainWindow"
         mc:Ignorable="d"
-        Title="Осталось сдать" Height="450" Width="800" MinWidth="400">
-    <Grid x:Name="table">
+        Title="Осталось сдать" Height="450" Width="800" MinWidth="400" KeyDown="win_KeyDown" SizeChanged="Win_SizeChanged">
+    <Window.DataContext>
+        <local:ViewModel/>
+    </Window.DataContext>
+    <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="70*"/>
-            <ColumnDefinition Width="30*"/>
+            <ColumnDefinition Width="100*"/>
         </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="100*"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-        <Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"  Background="#335e8f">
-            <MenuItem>
-                <MenuItem.Header>
-                    <TextBlock
-                        Height="20"
-                        Margin="0,5,0,0"
-                        x:Name="ClientName"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Bottom"
-                        FontFamily="Serif"
-                        FontSize="14"
-                        FontWeight="Bold"
-                        Foreground="White"
-                        Text="Вид" />
-                </MenuItem.Header>
-                <MenuItem.Style>
-                    <Style TargetType="MenuItem">
-                        <Setter Property="BorderThickness" Value="0" />
-                        <Style.Triggers>
-                            <Trigger Property="IsChecked" Value="False">
-                                <Setter Property="Background" Value="#4a76a8" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </MenuItem.Style>
-                <MenuItem IsChecked="True" x:Name="UpPanelMI" Header="Верхнее меню" Style="{StaticResource MIStandart}" Click="UpPanelMI_Click"/>
-                <MenuItem IsChecked="True" Visibility="Collapsed" x:Name="DownPanelMI" Header="Нижнее меню" Style="{StaticResource MIStandart}" Click="DownPanelMI_Click" />
-                <MenuItem IsChecked="True" Visibility="Collapsed" x:Name="RightPanelMI" Header="Правое меню" Style="{StaticResource MIStandart}" Click="RightPanelMI_Click" />
-            </MenuItem>
-        </Menu>
-        <Grid Grid.Row="1" Grid.Column="0" Background="#8daacc">
+        <Grid x:Name="table" Grid.Column="0"> 
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="18*"/>
-                <ColumnDefinition Width="18*"/>
-                <ColumnDefinition Width="18*"/>
-                <ColumnDefinition Width="14*"/>
-                <ColumnDefinition Width="14*"/>
-                <ColumnDefinition Width="18*"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="35"/>
-                <RowDefinition Height="25"/>
-            </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" Grid.Column="0" TextWrapping="WrapWithOverflow" Text="Название предмета" Style="{StaticResource TBlStandart}"/>
-            <TextBlock Grid.Row="0" Grid.Column="1" TextWrapping="WrapWithOverflow" Text="Количество лабораторных" Style="{StaticResource TBlStandart}"/>
-            <TextBlock Grid.Row="0" Grid.Column="2" TextWrapping="WrapWithOverflow" Text="Количество практических" Style="{StaticResource TBlStandart}"/>
-            <TextBlock Grid.Row="0" Grid.Column="3" TextWrapping="Wrap" Text="Контрольная" Style="{StaticResource TBlStandart}"/>
-            <TextBlock Grid.Row="0" Grid.Column="4" TextWrapping="Wrap" Text="Курсовая" Style="{StaticResource TBlStandart}"/>
-            <TextBox Grid.Row="1" Grid.Column="0" x:Name="addName" Style="{StaticResource TBStandart}"/>
-            <TextBox Grid.Row="1" Grid.Column="1" x:Name="addLab" Style="{StaticResource TBStandart}"/>
-            <TextBox Grid.Row="1" Grid.Column="2" x:Name="addPra" Style="{StaticResource TBStandart}"/>
-            <CheckBox Grid.Row="1" Grid.Column="3" x:Name="addCon" Style="{StaticResource CBStandart}"/>
-            <CheckBox Grid.Row="1" Grid.Column="4" x:Name="addCur" Style="{StaticResource CBStandart}"/>
-            <Button Grid.Row="0" Grid.Column="5" Grid.RowSpan="2" Margin="15,15,15,15" Content="Добавить" Style="{StaticResource BuStandart}" Click="AddSubject_Click"/>
-        </Grid>
-        <DataGrid Grid.Row="2" Grid.Column="0" Name="data" Style="{StaticResource DGStandart}" >
-            <DataGrid.Resources>
-                <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
-                    <Setter Property="Background" Value="#4a76a8" />
-                    <Setter Property="HorizontalAlignment" Value="Stretch"/>
-                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                    <Setter Property="VerticalAlignment" Value="Stretch"/>
-                    <Setter Property="FontFamily" Value="Serif"/>
-                    <Setter Property="FontSize" Value="14"/>
-                    <Setter Property="FontWeight" Value="Bold"/>
-                    <Setter Property="Foreground" Value="White"/>
-                    <Setter Property="Height" Value="30"/>
-                </Style>
-            </DataGrid.Resources>
-            <DataGrid.Columns>
-                <DataGridTemplateColumn Header="Название" Width="24.4*">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Button Content="{Binding Name}" Style="{StaticResource BuStandart}" Click="Button_Click"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                
-                <DataGridTemplateColumn Header="Лабораторные" Width="16.4*">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Button Content="{Binding Lab}" Style="{StaticResource BuStandart}" Click="ButtonLab_Click"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-
-                <DataGridTemplateColumn Header="Практические" Width="16.4*">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Button Content="{Binding Pra}" Style="{StaticResource BuStandart}" Click="ButtonPra_Click"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-
-                <DataGridTemplateColumn Header="Контрольная" Width="21.4*">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <ComboBox ItemsSource="{Binding DefaultComboBox}" SelectedItem="{Binding Con, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource CoBStandart}" DropDownOpened="ComboBox_DropDownOpened" SelectionChanged="ComboBoxCon_SelectionChanged"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                
-                <DataGridTemplateColumn Header="Курсовая" Width="21.4*">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <ComboBox ItemsSource="{Binding DefaultComboBox}" SelectedItem="{Binding Cur, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource CoBStandart}" DropDownOpened="ComboBox_DropDownOpened" SelectionChanged="ComboBoxCur_SelectionChanged"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-            </DataGrid.Columns>
-        </DataGrid>
-        <Grid Grid.Row="3" Grid.Column="0" Background="#8daacc">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="18*"/>
-                <ColumnDefinition Width="18*"/>
-                <ColumnDefinition Width="18*"/>
-                <ColumnDefinition Width="14*"/>
-                <ColumnDefinition Width="14*"/>
-                <ColumnDefinition Width="18*"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="35"/>
-                <RowDefinition Height="30"/>
-            </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" Grid.Column="0" TextWrapping="WrapWithOverflow" Text="Название предмета" Style="{StaticResource TBlStandart}"/>
-            <TextBlock Grid.Row="0" Grid.Column="1" TextWrapping="WrapWithOverflow" Text="Количество лабораторных" Style="{StaticResource TBlStandart}"/>
-            <TextBlock Grid.Row="0" Grid.Column="2" TextWrapping="WrapWithOverflow" Text="Количество практических" Style="{StaticResource TBlStandart}"/>
-            <TextBlock Grid.Row="0" Grid.Column="3" TextWrapping="Wrap" Text="Контрольная" Style="{StaticResource TBlStandart}"/>
-            <TextBlock Grid.Row="0" Grid.Column="4" TextWrapping="Wrap" Text="Курсовая" Style="{StaticResource TBlStandart}"/>
-            <TextBlock Grid.Row="1" Grid.Column="0" TextWrapping="Wrap" Text="1" x:Name="changeName" Style="{StaticResource TBlStandart}"/>
-            <TextBox Grid.Row="1" Grid.Column="1" x:Name="changeLab" FontSize="14" Style="{StaticResource TBStandart}"/>
-            <TextBox Grid.Row="1" Grid.Column="2" x:Name="changePra" FontSize="14" Style="{StaticResource TBStandart}"/>
-            <CheckBox Grid.Row="1" Grid.Column="3" x:Name="changeCon" Style="{StaticResource CBStandart}"/>
-            <CheckBox Grid.Row="1" Grid.Column="4" x:Name="changeCur" Style="{StaticResource CBStandart}"/>
-            <Button Grid.Row="0" Grid.Column="5" Margin="5,5,5,5" x:Name="Change"  Content="Изменить" Style="{StaticResource BuStandart}" Click="Change_Click"/>
-            <Button Grid.Row="1" Grid.Column="5" Margin="5,0,5,5" x:Name="Delete" Content="Удалить" Style="{StaticResource BuStandart}" Click="Delete_Click"/>
-        </Grid>
-        <Grid Grid.Row="1" Grid.Column="1" Grid.RowSpan="4" Background="#8daacc">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="11"/>
-                <ColumnDefinition Width="100*"/>
+                <ColumnDefinition Width="70*"/>
+                <ColumnDefinition Width="30*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="100*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Button Grid.Row="0" Grid.RowSpan="3" Grid.Column="0" Margin="0" BorderThickness="0"  Padding="0" Style="{StaticResource BuStandartWB}" Click="SubjectPanelHide">
-                <Grid VerticalAlignment="Center">
-                    <Polygon Fill="White" Points="1, 7, 6, 0, 6, 14" />
-                    <Polygon Fill="White" Points="1, 32, 6, 25, 6, 39" />
-                    <Polygon Fill="White" Points="1, 57, 6, 50, 6, 64" />
-                </Grid>
-            </Button>
-            <TextBlock Grid.Row="0" Grid.Column="1" Margin="2,5,2,0" x:Name="NameWork" Text="Название предмета: " TextWrapping="WrapWithOverflow" Style="{StaticResource TBlStandart}"/>
-            <TextBlock Grid.Row="1" Grid.Column="1" Margin="2,0,2,5" x:Name="TypeWork" Text="Тип работы: " TextWrapping="WrapWithOverflow" Style="{StaticResource TBlStandart}"/>
-            <DataGrid Grid.Row="2" Grid.Column="1" x:Name="dataWork" Style="{StaticResource DGStandart}">
+            <Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"  Background="#335e8f">
+                <MenuItem>
+                    <MenuItem.Header>
+                        <TextBlock
+                            Height="20"
+                            Margin="0,5,0,0"
+                            x:Name="ClientName"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Bottom"
+                            FontFamily="Serif"
+                            FontSize="14"
+                            FontWeight="Bold"
+                            Foreground="White"
+                            Text="Вид" />
+                    </MenuItem.Header>
+                    <MenuItem.Style>
+                        <Style TargetType="MenuItem">
+                            <Setter Property="BorderThickness" Value="0" />
+                            <Style.Triggers>
+                                <Trigger Property="IsChecked" Value="False">
+                                    <Setter Property="Background" Value="#4a76a8" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </MenuItem.Style>
+                    <MenuItem IsChecked="True" x:Name="UpPanelMI" Header="Верхнее меню" Style="{StaticResource MIStandart}" Click="UpPanelMI_Click"/>
+                    <MenuItem IsChecked="True" Visibility="Collapsed" x:Name="DownPanelMI" Header="Нижнее меню" Style="{StaticResource MIStandart}" Click="DownPanelMI_Click" />
+                    <MenuItem IsChecked="True" Visibility="Collapsed" x:Name="RightPanelMI" Header="Правое меню" Style="{StaticResource MIStandart}" Click="RightPanelMI_Click" />
+                </MenuItem>
+            </Menu>
+            <Grid Grid.Row="1" Grid.Column="0" Background="#8daacc">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="18*"/>
+                    <ColumnDefinition Width="18*"/>
+                    <ColumnDefinition Width="18*"/>
+                    <ColumnDefinition Width="14*"/>
+                    <ColumnDefinition Width="14*"/>
+                    <ColumnDefinition Width="18*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="35"/>
+                    <RowDefinition Height="25"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" TextWrapping="WrapWithOverflow" Text="Название предмета" Style="{StaticResource TBlStandart}"/>
+                <TextBlock Grid.Row="0" Grid.Column="1" TextWrapping="WrapWithOverflow" Text="Количество лабораторных" Style="{StaticResource TBlStandart}"/>
+                <TextBlock Grid.Row="0" Grid.Column="2" TextWrapping="WrapWithOverflow" Text="Количество практических" Style="{StaticResource TBlStandart}"/>
+                <TextBlock Grid.Row="0" Grid.Column="3" TextWrapping="Wrap" Text="Контрольная" Style="{StaticResource TBlStandart}"/>
+                <TextBlock Grid.Row="0" Grid.Column="4" TextWrapping="Wrap" Text="Курсовая" Style="{StaticResource TBlStandart}"/>
+                <TextBox Grid.Row="1" Grid.Column="0" x:Name="addName" Style="{StaticResource TBStandart}"/>
+                <TextBox Grid.Row="1" Grid.Column="1" x:Name="addLab" Style="{StaticResource TBStandart}"/>
+                <TextBox Grid.Row="1" Grid.Column="2" x:Name="addPra" Style="{StaticResource TBStandart}"/>
+                <CheckBox Grid.Row="1" Grid.Column="3" x:Name="addCon" Style="{StaticResource CBStandart}"/>
+                <CheckBox Grid.Row="1" Grid.Column="4" x:Name="addCur" Style="{StaticResource CBStandart}"/>
+                <Button Grid.Row="0" Grid.Column="5" Grid.RowSpan="2" Margin="15,15,15,15" Content="Добавить" Style="{StaticResource BuStandart}" Click="AddSubject_Click"/>
+            </Grid>
+            <DataGrid Grid.Row="2" Grid.Column="0" Name="data" Style="{StaticResource DGStandart}" >
                 <DataGrid.Resources>
                     <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
                         <Setter Property="Background" Value="#4a76a8" />
@@ -192,29 +98,139 @@
                     </Style>
                 </DataGrid.Resources>
                 <DataGrid.Columns>
-                    <DataGridTemplateColumn Header="№" Width="20*">
+                    <DataGridTemplateColumn Header="Название" Width="24.4*">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Number}" Style="{StaticResource TBlStandart}"/>
+                                <Button Content="{Binding Name}" Style="{StaticResource BuStandart}" Click="Button_Click"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="Стадия" Width="60*">
+                
+                    <DataGridTemplateColumn Header="Лабораторные" Width="16.4*">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <ComboBox ItemsSource="{Binding DefaultComboBox}" SelectedItem="{Binding Stage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource CoBStandart}" SelectionChanged="ComboBoxWork_SelectionChanged"/>
+                                <Button Content="{Binding Lab}" Style="{StaticResource BuStandart}" Click="ButtonLab_Click"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="Файл" Width="20*">
+
+                    <DataGridTemplateColumn Header="Практические" Width="16.4*">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <Button Style="{StaticResource BuStandart}" />
+                                <Button Content="{Binding Pra}" Style="{StaticResource BuStandart}" Click="ButtonPra_Click"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Контрольная" Width="21.4*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <ComboBox ItemsSource="{Binding DefaultComboBox}" SelectedItem="{Binding Con, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource CoBStandart}" DropDownOpened="ComboBox_DropDownOpened" SelectionChanged="ComboBoxCon_SelectionChanged"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                
+                    <DataGridTemplateColumn Header="Курсовая" Width="21.4*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <ComboBox ItemsSource="{Binding DefaultComboBox}" SelectedItem="{Binding Cur, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource CoBStandart}" DropDownOpened="ComboBox_DropDownOpened" SelectionChanged="ComboBoxCur_SelectionChanged"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
+            <Grid Grid.Row="3" Grid.Column="0" Background="#8daacc">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="18*"/>
+                    <ColumnDefinition Width="18*"/>
+                    <ColumnDefinition Width="18*"/>
+                    <ColumnDefinition Width="14*"/>
+                    <ColumnDefinition Width="14*"/>
+                    <ColumnDefinition Width="18*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="35"/>
+                    <RowDefinition Height="30"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" TextWrapping="WrapWithOverflow" Text="Название предмета" Style="{StaticResource TBlStandart}"/>
+                <TextBlock Grid.Row="0" Grid.Column="1" TextWrapping="WrapWithOverflow" Text="Количество лабораторных" Style="{StaticResource TBlStandart}"/>
+                <TextBlock Grid.Row="0" Grid.Column="2" TextWrapping="WrapWithOverflow" Text="Количество практических" Style="{StaticResource TBlStandart}"/>
+                <TextBlock Grid.Row="0" Grid.Column="3" TextWrapping="Wrap" Text="Контрольная" Style="{StaticResource TBlStandart}"/>
+                <TextBlock Grid.Row="0" Grid.Column="4" TextWrapping="Wrap" Text="Курсовая" Style="{StaticResource TBlStandart}"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" TextWrapping="Wrap" Text="1" x:Name="changeName" Style="{StaticResource TBlStandart}"/>
+                <TextBox Grid.Row="1" Grid.Column="1" x:Name="changeLab" FontSize="14" Style="{StaticResource TBStandart}"/>
+                <TextBox Grid.Row="1" Grid.Column="2" x:Name="changePra" FontSize="14" Style="{StaticResource TBStandart}"/>
+                <CheckBox Grid.Row="1" Grid.Column="3" x:Name="changeCon" Style="{StaticResource CBStandart}"/>
+                <CheckBox Grid.Row="1" Grid.Column="4" x:Name="changeCur" Style="{StaticResource CBStandart}"/>
+                <Button Grid.Row="0" Grid.Column="5" Margin="5,5,5,5" x:Name="Change"  Content="Изменить" Style="{StaticResource BuStandart}" Click="Change_Click"/>
+                <Button Grid.Row="1" Grid.Column="5" Margin="5,0,5,5" x:Name="Delete" Content="Удалить" Style="{StaticResource BuStandart}" Click="Delete_Click"/>
+            </Grid>
+            <Grid Grid.Row="1" Grid.Column="1" Grid.RowSpan="4" Background="#8daacc">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="11"/>
+                    <ColumnDefinition Width="100*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="100*"/>
+                </Grid.RowDefinitions>
+                <Button Grid.Row="0" Grid.RowSpan="3" Grid.Column="0" Margin="0" BorderThickness="0"  Padding="0" Style="{StaticResource BuStandartWB}" Click="SubjectPanelHide">
+                    <Grid VerticalAlignment="Center">
+                        <Polygon Fill="White" Points="1, 7, 6, 0, 6, 14" />
+                        <Polygon Fill="White" Points="1, 32, 6, 25, 6, 39" />
+                        <Polygon Fill="White" Points="1, 57, 6, 50, 6, 64" />
+                    </Grid>
+                </Button>
+                <TextBlock Grid.Row="0" Grid.Column="1" Margin="2,5,2,0" x:Name="NameWork" Text="Название предмета: " TextWrapping="WrapWithOverflow" Style="{StaticResource TBlStandart}"/>
+                <TextBlock Grid.Row="1" Grid.Column="1" Margin="2,0,2,5" x:Name="TypeWork" Text="Тип работы: " TextWrapping="WrapWithOverflow" Style="{StaticResource TBlStandart}"/>
+                <DataGrid Grid.Row="2" Grid.Column="1" x:Name="dataWork" Style="{StaticResource DGStandart}">
+                    <DataGrid.Resources>
+                        <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
+                            <Setter Property="Background" Value="#4a76a8" />
+                            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                            <Setter Property="VerticalAlignment" Value="Stretch"/>
+                            <Setter Property="FontFamily" Value="Serif"/>
+                            <Setter Property="FontSize" Value="14"/>
+                            <Setter Property="FontWeight" Value="Bold"/>
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="Height" Value="30"/>
+                        </Style>
+                    </DataGrid.Resources>
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Header="№" Width="20*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Number}" Style="{StaticResource TBlStandart}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Стадия" Width="60*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <ComboBox ItemsSource="{Binding DefaultComboBox}" SelectedItem="{Binding Stage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource CoBStandart}" SelectionChanged="ComboBoxWork_SelectionChanged"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Файл" Width="20*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Style="{StaticResource BuStandart}" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
         </Grid>
+        <Grid x:Name="lines" Grid.Column="0">
+
+        </Grid>
+        <Grid x:Name="settings" Grid.Column="0" Visibility="Collapsed">
+        </Grid>
+        <Button Width="20" Height="20" Margin="0,2,3,0" HorizontalAlignment="Right" VerticalAlignment="Top" Grid.ColumnSpan="2" Style="{StaticResource BuStandart}" Click="OpenSettings_Click">
+            <Image Width="20" Height="20" Source="/Resources/Settings.png" />
+        </Button>
     </Grid>
 </Window>

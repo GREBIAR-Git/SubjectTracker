@@ -4,6 +4,10 @@ using System.Data;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Xml.Linq;
+using TestGit;
 
 namespace SubjectTracker
 {
@@ -14,9 +18,21 @@ namespace SubjectTracker
         readonly List<Subject> tableInfo;
         readonly List<Works> worksInfo;
 
+        readonly ViewModel viewModel;
+
+        List<string> changes;
+
+        Git git;
         public MainWindow()
         {
+            changes = new();
+            git = new();
+            viewModel = new ViewModel()
+            {
+                DateComboBox = new List<string>(),
+            };
             InitializeComponent();
+            DataContext = viewModel;
             tableInfo = new List<Subject>();
             worksInfo = new List<Works>();
             data.ItemsSource = tableInfo;
@@ -24,6 +40,32 @@ namespace SubjectTracker
             ReadingDB();
             SubjectPanelHide();
             WorkPanelHide();
+            /*
+            int code1 = git.NewCommit("fix bug", new List<string>());
+            int code = git.NewCommit("fix bug", new List<string>());
+            git.NewCommit("fix bug", new List<string>());
+
+            git.Checkout(code);
+
+            git.NewCommit("full update", new List<string>());
+            code = git.NewCommit("fix", new List<string>());
+
+            git.Checkout(code);
+
+            git.NewCommit("restart", new List<string>());
+
+            git.Checkout(code);
+
+            git.NewCommit("restart v2", new List<string>());
+
+            git.Checkout(code);
+
+            git.NewCommit("restart v3", new List<string>());
+
+            git.Checkout(code1);
+
+            git.NewCommit("test1", new List<string>());
+            git.NewCommit("test2", new List<string>());*/
         }
         void AddPanelHide()
         {
@@ -97,8 +139,9 @@ namespace SubjectTracker
                 }
                 bool con = addCon.IsChecked.Value;
                 bool cur = addCur.IsChecked.Value;
-                if (db.AddSubject(name, countLab, countPra, con, cur))
+                if (AddSubject(name, countLab, countPra, con, cur))
                 {
+                    changes.Add("ADD " + name + " " + countLab + " " + countPra + " " + con + " " + cur);
                     AddSubjectInTable(name, countLab.ToString(), countPra.ToString(), con, cur);
                 }
                 else
@@ -125,7 +168,7 @@ namespace SubjectTracker
 
         void Change_Click(object sender, RoutedEventArgs e)
         {
-            db.UpdateSubject(changeName.Text, changeLab.Text, changePra.Text, changeCon.IsChecked.Value, changeCur.IsChecked.Value);
+            UpdateSubject(changeName.Text, changeLab.Text, changePra.Text, changeCon.IsChecked.Value, changeCur.IsChecked.Value);
             if (table.ColumnDefinitions[1].Width.IsStar && changeName.Text == NameWork.Text.Remove(0, 19))
             {
                 WorkReading(changeName.Text, TypeWork.Text.Remove(0, 14));
@@ -136,14 +179,35 @@ namespace SubjectTracker
 
         void Delete_Click(object sender, RoutedEventArgs e)
         {
-            db.DeleteSubject(changeName.Text);
+            DeleteSubject(changeName.Text);
+            changes.Add("DELETE " + changeName.Text);
             if (table.ColumnDefinitions[1].Width.IsStar && changeName.Text == NameWork.Text.Remove(0, 19))
             {
                 WorkPanelHide();
             }
             SubjectPanelHide();
             ReadingDB();
+        }
 
+        bool AddSubject(string name, int lab, int pra, bool con, bool cur)
+        {
+            return db.AddSubject(name, lab, pra, con, cur);
+        }
+
+        void UpdateSubject(string name, string lab, string pra, bool con, bool cur)
+        {
+            changes.Add("UPDATE S " + name + " " + lab + " " + pra + " " + con + " " + cur);
+            db.UpdateSubject(name, lab, pra, con, cur);
+        }
+
+        void DeleteSubject(string name)
+        {
+            db.DeleteSubject(name);
+        }
+
+        void UpdateConCur(string cell, string type, string item)
+        {
+            db.UpdateConCur(cell, item, type);
         }
 
         void DownPanelMI_Click(object sender, RoutedEventArgs e)
@@ -189,7 +253,8 @@ namespace SubjectTracker
                 {
                     changeCur.IsChecked = item.Cur != "—";
                 }
-                ComboboxChange(item.Cur, "cur_stage", item);
+                UpdateConCur(item.Cur, "cur_stage", item.Name);
+                changes.Add("UPDATE C " + item.Cur + " " + "cur_stage" + " " + item.Name);
             }
         }
 
@@ -202,13 +267,9 @@ namespace SubjectTracker
                 {
                     changeCon.IsChecked = item.Con != "—";
                 }
-                ComboboxChange(item.Con, "con_stage", item);
+                UpdateConCur(item.Con, "con_stage", item.Name);
+                changes.Add("UPDATE C " + item.Con + " " + "con_stage" + " " + item.Name);
             }
-        }
-
-        void ComboboxChange(string cell, string type, Subject item)
-        {
-            db.UpdateConCur(cell, item.Name, type);
         }
 
         void ButtonLab_Click(object sender, RoutedEventArgs e)
@@ -247,6 +308,7 @@ namespace SubjectTracker
             if (item != null)
             {
                 db.UpdateWork(NameWork.Text.Remove(0, 19), item.Number, TypeWork.Text.Remove(0, 14), item.Stage);
+                changes.Add("UPDATE WORK " + NameWork.Text.Remove(0, 19) + " " + item.Number + " " + TypeWork.Text.Remove(0, 14) + " " + item.Stage);
                 ReadingDB();
             }
         }
@@ -255,6 +317,87 @@ namespace SubjectTracker
         {
             WorkPanelHide();
             RightPanelMI.Visibility = Visibility.Collapsed;
+        }
+
+        private void win_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (Keyboard.IsKeyDown(Key.LeftCtrl) && e.Key == Key.S)
+            {
+                git.NewCommit(DateTime.Now.ToString(), changes);
+                changes.Clear();
+            }
+        }
+
+        void UpdateVersion()
+        {
+            db.Reset();
+            List<string> commands = git.GetHistoryData();
+            foreach (string command in commands)
+            {
+                string[] item = command.Split(' ');
+                if (item[0] == "ADD")
+                {
+                    AddSubject(item[1], int.Parse(item[2]), int.Parse(item[3]), bool.Parse(item[4]), bool.Parse(item[5]));
+                }
+                else if (item[0] == "UPDATE")
+                {
+                    if (item[1] == "S")
+                    {
+                        UpdateSubject(item[2], item[3], item[4], bool.Parse(item[5]), bool.Parse(item[6]));
+                    }
+                    else if (item[1] == "C")
+                    {
+                        UpdateConCur(item[2], item[3], item[4]);
+                    }
+                    else if (item[1] == "WORK")
+                    {
+                        db.UpdateWork(item[2], item[3], item[4], item[5]);
+                    }
+                }
+                else if (item[0] == "DELETE")
+                {
+                    DeleteSubject(item[1]);
+                }
+            }
+        }
+
+        void OpenSettings_Click(object sender, RoutedEventArgs e)
+        {
+            if(settings.Visibility == Visibility.Collapsed)
+            {
+                table.Visibility = Visibility.Collapsed;
+                settings.Visibility = Visibility.Visible;
+                lines.Visibility = Visibility.Visible;
+                UpdateVersionGrid();
+            }
+            else
+            {
+                table.Visibility = Visibility.Visible;
+                settings.Visibility = Visibility.Collapsed;
+                lines.Visibility = Visibility.Collapsed;
+                ReadingDB();
+            }
+        }
+
+        void UpdateVersionGrid()
+        {
+            git.GitToGrids(settings, lines, ClickGitVersion);
+        }
+
+        void ClickGitVersion(object sender, RoutedEventArgs e)
+        {
+            Button button = (Button)sender;
+            git.Checkout((int)button.Tag);
+            UpdateVersion();
+            git.GitToGrids(settings, lines, ClickGitVersion);
+        }
+
+        private void Win_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if(settings.Visibility== Visibility.Visible)
+            {
+                git.UpdateLines(lines);
+            }
         }
     }
 }
