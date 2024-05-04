@@ -1,13 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace TestGit;
+namespace SubjectTracker.GitSaves;
 
-class Branch : IComparable<Branch>
+internal class Branch : IComparable<Branch>
 {
-    public string Name { get; private set; }
-    public Commit First { get; private set; }
-    public Branch? Prev { get; private set; }
+    public Branch(string nameBranch, string nameCommit = "Initial commit", List<string>? dataCommit = null,
+        Branch? prev = null, Commit? prevCommit = null)
+    {
+        dataCommit ??= new();
+        Name = nameBranch;
+        First = new(nameCommit, dataCommit, prevCommit);
+        Prev = prev;
+    }
+
+    public string Name { get; }
+    public Commit First { get; }
+    public Branch? Prev { get; }
+
+    public virtual int CompareTo(Branch other)
+    {
+        if (CountPrev() == other.CountPrev())
+        {
+            return 0;
+        }
+
+        if (CountPrev() > other.CountPrev())
+        {
+            return -1;
+        }
+
+        return 1;
+    }
 
     public int CountPrev()
     {
@@ -15,34 +39,10 @@ class Branch : IComparable<Branch>
         int count = 0;
         while (commit.Prev != null)
         {
-
             count += 1;
             commit = commit.Prev;
         }
+
         return count;
-    }
-
-
-    public Branch(string nameBranch, string nameCommit = "Initial commit", List<string>? dataCommit = null, Branch? prev = null, Commit? prevCommit = null)
-    {
-        dataCommit ??= new List<string>();
-        Name = nameBranch;
-        First = new Commit(nameCommit, dataCommit, prevCommit);
-        Prev = prev;
-    }
-    public virtual int CompareTo(Branch other)
-    {
-        if (CountPrev() == other.CountPrev())
-        {
-            return 0;
-        }
-        else if (CountPrev() > other.CountPrev())
-        {
-            return -1;
-        }
-        else
-        {
-            return 1;
-        }
     }
 }

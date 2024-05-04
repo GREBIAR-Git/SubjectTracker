@@ -1,19 +1,26 @@
-﻿using SubjectTracker;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
-namespace TestGit;
+namespace SubjectTracker.GitSaves;
 
-class Git
+public class Git
 {
+    readonly Dictionary<Commit, List<Branch>> branchs = new();
     readonly Branch First;
     Branch CurrentBranch;
     Commit CurrentCommit;
-    readonly Dictionary<Commit, List<Branch>> branchs = new();
+
+
+    public Git(string mainBranch = "master")
+    {
+        First = new(mainBranch);
+        CurrentBranch = First;
+        CurrentCommit = First.First;
+    }
     /*
     public void Push()
     {
@@ -62,7 +69,7 @@ class Git
 
 
         double width = lines.ActualWidth / maxColumns;
-        double height = (lines.ActualHeight) / maxRow;
+        double height = lines.ActualHeight / maxRow;
 
 
         int columns = 0;
@@ -77,13 +84,13 @@ class Git
             int f = branch.CountPrev();
             while (commit != null)
             {
-
                 AddButton(i, f, lines, commit, width, height, ref firstRow, lastBranch);
 
                 if (branchs.TryGetValue(commit, out List<Branch> branchsChild))
                 {
                     branchList.AddRange(branchsChild);
                 }
+
                 commit = commit.Next;
                 f++;
             }
@@ -99,7 +106,8 @@ class Git
             }
         }
 
-        void AddButton(int i, int f, Grid lines, Commit commit, double width, double height, ref bool firstRow, int lastBranch)
+        void AddButton(int i, int f, Grid lines, Commit commit, double width, double height, ref bool firstRow,
+            int lastBranch)
         {
             Color additional = (Color)ColorConverter.ConvertFromString("#335e8f");
             if (!firstRow)
@@ -123,17 +131,18 @@ class Git
                 {
                     Line line = new()
                     {
-                        Visibility = System.Windows.Visibility.Visible,
+                        Visibility = Visibility.Visible,
                         StrokeThickness = 4,
 
                         Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#335e8f")),
-                        X1 = (width * (lastBranch + 1) - 12),
-                        X2 = (width * i) + width / 2,
+                        X1 = width * (lastBranch + 1) - 12,
+                        X2 = width * i + width / 2,
                         Y1 = height * (f - 1) + height / 2,
-                        Y2 = (height * f) + 12
+                        Y2 = height * f + 12
                     };
                     lines.Children.Add(line);
                 }
+
                 firstRow = false;
             }
         }
@@ -159,18 +168,20 @@ class Git
                 maxRow = commits.Count;
             }
         }
+
         for (int i = 0; i < maxColumns; i++)
         {
-            main.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(100 / maxColumns, type: GridUnitType.Star) });
+            main.ColumnDefinitions.Add(new() { Width = new(100 / maxColumns, GridUnitType.Star) });
         }
+
         for (int i = 0; i < maxRow; i++)
         {
-            main.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(100 / maxRow, type: GridUnitType.Star) });
+            main.RowDefinitions.Add(new() { Height = new(100 / maxRow, GridUnitType.Star) });
         }
 
 
         double width = lines.ActualWidth / maxColumns;
-        double height = (lines.ActualHeight) / maxRow;
+        double height = lines.ActualHeight / maxRow;
 
 
         int columns = 0;
@@ -185,13 +196,13 @@ class Git
             int f = branch.CountPrev();
             while (commit != null)
             {
-
                 AddButton(i, f, main, lines, commit, width, height, ref firstRow, lastBranch);
 
                 if (branchs.TryGetValue(commit, out List<Branch> branchsChild))
                 {
                     branchList.AddRange(branchsChild);
                 }
+
                 commit = commit.Next;
                 f++;
             }
@@ -207,16 +218,17 @@ class Git
             }
         }
 
-        void AddButton(int i, int f, Grid main, Grid lines, Commit commit, double width, double height, ref bool firstRow, int lastBranch)
+        void AddButton(int i, int f, Grid main, Grid lines, Commit commit, double width, double height,
+            ref bool firstRow, int lastBranch)
         {
             Color additional = (Color)ColorConverter.ConvertFromString("#335e8f");
             Button button = new()
             {
                 Style = Application.Current.FindResource("BuTree") as Style,
-                Margin = new Thickness(10, 10, 10, 10),
+                Margin = new(10, 10, 10, 10),
                 Tag = commit.GetHashCode(),
                 Content = commit.Data.Name,
-                Name = "h" + commit.GetHashCode().ToString()
+                Name = "h" + commit.GetHashCode()
             };
             if (commit == CurrentCommit)
             {
@@ -245,19 +257,21 @@ class Git
                 {
                     Line line = new()
                     {
-                        Visibility = System.Windows.Visibility.Visible,
+                        Visibility = Visibility.Visible,
                         StrokeThickness = 4,
 
                         Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#335e8f")),
-                        X1 = (width * (lastBranch + 1) - 12),
-                        X2 = (width * i) + width / 2,
+                        X1 = width * (lastBranch + 1) - 12,
+                        X2 = width * i + width / 2,
                         Y1 = height * (f - 1) + height / 2,
-                        Y2 = (height * f) + 12
+                        Y2 = height * f + 12
                     };
                     lines.Children.Add(line);
                 }
+
                 firstRow = false;
             }
+
             main.Children.Add(button);
             Grid.SetColumn(button, i);
             Grid.SetRow(button, f);
@@ -278,6 +292,7 @@ class Git
                 allCommit.Add(AllCommitBranch(branch, branch.CountPrev()));
             }
         }
+
         return allCommit;
 
         static List<CommitData> AllCommitBranch(Branch branch, int countPrev = 0)
@@ -285,14 +300,16 @@ class Git
             List<CommitData> commitBranch = new();
             for (int i = 0; i < countPrev; i++)
             {
-                commitBranch.Add(new CommitData("Empty", new List<string>(), DateTime.Now));
+                commitBranch.Add(new("Empty", new(), DateTime.Now));
             }
+
             Commit? commit = branch.First;
             while (commit != null)
             {
                 commitBranch.Add(commit.Data);
                 commit = commit.Next;
             }
+
             return commitBranch;
         }
     }
@@ -311,31 +328,26 @@ class Git
             CurrentCommit = CurrentCommit.NewCommit(name, copy);
             return CurrentCommit.GetHashCode();
         }
-        else
+
+        if (branchs.TryGetValue(CurrentCommit, out List<Branch> old))
         {
-            if (branchs.TryGetValue(CurrentCommit, out List<Branch> old))
-            {
-                CurrentBranch = new Branch("branch " + name, name, copy, CurrentBranch, CurrentCommit);
-                old.Add(CurrentBranch);
-                branchs[CurrentCommit] = old;
-                CurrentCommit = CurrentBranch.First;
-                return CurrentCommit.GetHashCode();
-            }
-            else
-            {
-                CurrentBranch = new Branch("branch " + name, name, copy, CurrentBranch, CurrentCommit);
-                branchs.Add(CurrentCommit, new List<Branch>() { CurrentBranch });
-                CurrentCommit = CurrentBranch.First;
-                return CurrentCommit.GetHashCode();
-            }
+            CurrentBranch = new("branch " + name, name, copy, CurrentBranch, CurrentCommit);
+            old.Add(CurrentBranch);
+            branchs[CurrentCommit] = old;
+            CurrentCommit = CurrentBranch.First;
+            return CurrentCommit.GetHashCode();
         }
+
+        CurrentBranch = new("branch " + name, name, copy, CurrentBranch, CurrentCommit);
+        branchs.Add(CurrentCommit, new() { CurrentBranch });
+        CurrentCommit = CurrentBranch.First;
+        return CurrentCommit.GetHashCode();
     }
 
 
     public List<string> GetHistoryData()
     {
         List<string> history = new();
-        Branch? branch = CurrentBranch;
         Commit? commit = CurrentCommit;
         List<List<string>> temp = new();
         while (commit != null)
@@ -343,11 +355,13 @@ class Git
             temp.Add(commit.Data.Changes);
             commit = commit.Prev;
         }
+
         temp.Reverse();
         foreach (List<string> tempHistory in temp)
         {
             history.AddRange(tempHistory);
         }
+
         return history;
     }
 
@@ -374,6 +388,7 @@ class Git
                 CurrentBranch = current;
                 break;
             }
+
             commit = commit.Next;
         }
     }
@@ -405,6 +420,7 @@ class Git
                     Console.WriteLine("DATA:");
                     Console.WriteLine(commit.Data.Changes);
                 }
+
                 commit = commit.Next;
             }
         }
@@ -418,16 +434,9 @@ class Git
                 prevbranch = current.Prev.Name + "->" + prevbranch;
                 current = current.Prev;
             }
+
             return prevbranch;
         }
-    }
-
-
-    public Git(string mainBranch = "master")
-    {
-        First = new Branch(mainBranch);
-        CurrentBranch = First;
-        CurrentCommit = First.First;
     }
     /*
         public List<CommitIdentifier> GetCommitIdentifier()

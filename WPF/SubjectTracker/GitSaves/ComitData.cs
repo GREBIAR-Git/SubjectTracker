@@ -1,19 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SubjectTracker
-{
-    internal class CommitData
-    {
-        public string Name { get; private set; }
-        public List<string> Changes { get; private set; }
-        public DateTime Date { get; private set; }
+namespace SubjectTracker.GitSaves;
 
-        public CommitData(string name, List<string> changes, DateTime date)
-        {
-            Name = name;
-            Changes = changes;
-            Date = date;
-        }
+internal class CommitData
+{
+    public CommitData(string name, List<string> changes, DateTime date)
+    {
+        Name = name;
+        Changes = changes;
+        Date = date;
     }
+
+    public string Name { get; }
+    public List<string> Changes { get; }
+    public DateTime Date { get; }
 }
