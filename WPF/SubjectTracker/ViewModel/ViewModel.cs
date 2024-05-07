@@ -351,21 +351,18 @@ public class ViewModelMain : ViewModelBase
         Visibility.WorkPanelVisibility = System.Windows.Visibility.Visible;
         SelectionTypeWork = type;
 
-        DataRowCollection dataRowCollection = db.InfoWork(SelectedSubject.Name, type);
-        if (dataRowCollection.Count > 0)
+        DataRowCollection rows = db.InfoWork(SelectedSubject.Name, type);
+
+        foreach (DataRow row in rows)
         {
-            for (int i = 0; i < dataRowCollection.Count; i++)
-            {
-                TableWithWorks.Add(new((long)dataRowCollection[i].ItemArray[0], (i + 1).ToString(),
-                    dataRowCollection[i].ItemArray[1].ToString(), (long)dataRowCollection[i].ItemArray[2]));
-            }
+            TableWithWorks.Add(new(Convert.ToInt64(row["id_works"]), row["number"].ToString(),
+                row["name"].ToString(), Convert.ToInt64(row["file"])));
         }
     }
 
     public void InitGit()
     {
-        List<TableSubject> subjects = db.GeneralInformation();
-        foreach (var subject in subjects)
+        foreach (var subject in tableWithSubject)
         {
             Changes.Add("ADD " + subject.Name + " " + subject.CountLab + " " + subject.CountPra + " " +
                         subject.IndexCon + " " + subject.IndexCur);

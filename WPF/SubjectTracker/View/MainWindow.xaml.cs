@@ -13,9 +13,8 @@ public partial class MainWindow : Window
 
     public MainWindow()
     {
-        viewModel = new();
         InitializeComponent();
-        DataContext = viewModel;
+        viewModel = (ViewModelMain)DataContext;
         viewModel.InitGit();
     }
 

@@ -81,8 +81,8 @@ public class DataBase
     {
         using SQLiteConnection connection = new("Data Source = " + pathDB);
         connection.Open();
-        string idSubject = Query(connection, "SELECT id_subject FROM Subject WHERE name='" + name + "'")[0]
-            .ItemArray[0].ToString();
+        DataRowCollection rows = Query(connection, "SELECT id_subject FROM Subject WHERE name='" + name + "'");
+        string idSubject = rows[0].ItemArray[0].ToString();
         SQLiteCommand command = new()
         {
             Connection = connection,
@@ -100,7 +100,8 @@ public class DataBase
 
     static void InsertWorks(SQLiteConnection connection, string view, string name, int from, int to)
     {
-        string idView = Query(connection, "SELECT * FROM Type WHERE name='" + view + "'")[0].ItemArray[0].ToString();
+        string idView = Query(connection, "SELECT * FROM Type WHERE name='" + view + "'")[0].ItemArray[0]
+            .ToString();
         string idSubject = Query(connection, "SELECT * FROM Subject WHERE name='" + name + "'")[0].ItemArray[0]
             .ToString();
         string[] values = new string[to - from];
@@ -143,20 +144,17 @@ public class DataBase
     {
         using SQLiteConnection connection = new("Data Source = " + pathDB);
         connection.Open();
-        StringBuilder insert = new("delete from Subject");
-
         SQLiteCommand command1 = new()
         {
             Connection = connection,
-            CommandText = insert.ToString()
+            CommandText = "DELETE FROM Subject"
         };
         command1.ExecuteNonQuery();
-        insert = new("delete from Works");
 
         SQLiteCommand command2 = new()
         {
             Connection = connection,
-            CommandText = insert.ToString()
+            CommandText = "DELETE FROM Works"
         };
         command2.ExecuteNonQuery();
     }
@@ -174,19 +172,17 @@ public class DataBase
         List<TableSubject> info = [];
         using SQLiteConnection connection = new("Data Source = " + pathDB);
         connection.Open();
-        DataRowCollection allName = Query(connection, "SELECT id_subject,name,con_stage,cur_stage FROM Subject");
-        foreach (DataRow row in allName)
+
+
+        var rows = Query(connection, "SELECT name,con_stage,cur_stage FROM Subject");
+
+        foreach (DataRow row in rows)
         {
-            string name = row.Field<string>("name");
-            int donel = CountDoneSubject(connection, out int countL, name, "Лабораторная");
-            int donep = CountDoneSubject(connection, out int countP, name, "Практическая");
-            info.Add(new(name,
-                donel,
-                donep,
-                countL,
-                countP,
-                (int)row.Field<long>("con_stage"),
-                (int)row.Field<long>("cur_stage")
+            string name = row["name"].ToString();
+            (int doneL, int countL) = CountDoneSubject(connection, name, "Лабораторная");
+            (int doneP, int countP) = CountDoneSubject(connection, name, "Практическая");
+            info.Add(new(name, doneL, doneP, countL, countP, Convert.ToInt32(row["con_stage"]),
+                Convert.ToInt32(row["cur_stage"])
             ));
         }
 
@@ -199,38 +195,44 @@ public class DataBase
         using SQLiteConnection connection = new("Data Source = " + pathDB);
         connection.Open();
         DataRowCollection rows = Query(connection,
-            "SELECT s.name as sn, w.number, w.id_stage, t.name as tn FROM Works w JOIN Subject s JOIN Type t");
+            "SELECT s.name as sn, w.number, w.id_stage, t.name as tn FROM Works w JOIN Subject s USING(id_subject) JOIN Type t USING(id_type) WHERE w.id_stage>2");
 
-        foreach (DataRow row in rows)
-        {
-            long idStage = row.Field<long>("id_stage");
-            if (idStage > 2)
-            {
-                string subjectName = row.Field<string>("sn");
-
-                long number = row.Field<long>("number");
-
-                string typeName = row.Field<string>("tn");
-
-                info.Add("UPDATE WORK " + subjectName + " " + number + " " + typeName + " " + idStage);
-            }
-        }
+        info.AddRange(from DataRow row in rows
+            let idStage = row.Field<long>("id_stage")
+            let subjectName = row.Field<string>("sn")
+            let number = row.Field<long>("number")
+            let typeName = row.Field<string>("tn")
+            select "UPDATE WORK " + subjectName + " " + number + " " + typeName + " " + idStage);
 
         return info;
     }
 
-    static int CountDoneSubject(SQLiteConnection connection, out int countAll, string name, string type)
+    static (int, int) CountDoneSubject(SQLiteConnection connection, string name, string type)
     {
-        DataRowCollection all = AllWorks(connection, name, type);
-        countAll = all.Count;
-
-        return all.Cast<DataRow>().Count(row => row[1].ToString() == "Сдано");
+        int countAll = Convert.ToInt32(CountAllDown(connection, name, type)[0][0]);
+        int all = Convert.ToInt32(CountAll(connection, name, type)[0][0]);
+        return new(all, countAll);
     }
+
+    static DataRowCollection CountAllDown(SQLiteConnection connection, string name, string type)
+    {
+        return Query(connection,
+            "SELECT COUNT(*) FROM Works w JOIN Type v USING(id_type) JOIN Subject su USING(id_subject) WHERE v.name='" +
+            type + "' AND su.name='" + name + "'");
+    }
+
+    static DataRowCollection CountAll(SQLiteConnection connection, string name, string type)
+    {
+        return Query(connection,
+            "SELECT COUNT(*) FROM Works w JOIN Type v USING(id_type) JOIN Subject su USING(id_subject) WHERE v.name='" +
+            type + "' AND su.name='" + name + "' AND id_stage=4");
+    }
+
 
     static DataRowCollection AllWorks(SQLiteConnection connection, string name, string type)
     {
         return Query(connection,
-            "SELECT w.id_works, st.name, w.file IS NOT NULL FROM Works w JOIN Type v USING(id_type) JOIN Subject su USING(id_subject) JOIN Stage st USING(id_stage) WHERE v.name='" +
+            "SELECT w.id_works, st.name, CASE WHEN w.file IS NULL THEN 0 ELSE w.file END as file, w.number FROM Works w JOIN Type v USING(id_type) JOIN Subject su USING(id_subject) JOIN Stage st USING(id_stage) WHERE v.name='" +
             type + "' AND su.name='" + name + "'");
     }
 
@@ -273,7 +275,8 @@ public class DataBase
     static void ChangeCountWorks(SQLiteConnection connection, string idSubject, string nameSubject, int newCount,
         string nameType)
     {
-        string idView = Query(connection, "SELECT id_type FROM Type WHERE name='" + nameType + "'")[0].ItemArray[0]
+        string idView = Query(connection, "SELECT id_type FROM Type WHERE name='" + nameType + "'")[0]
+            .ItemArray[0]
             .ToString();
 
         int count = Query(connection,
@@ -300,7 +303,8 @@ public class DataBase
 
     void ChangeConCur(SQLiteConnection connection, string idSubject, int con, int cur)
     {
-        DataRow row = Query(connection, "SELECT con_stage,cur_stage FROM Subject WHERE id_subject=" + idSubject)[0];
+        DataRow row =
+            Query(connection, "SELECT con_stage,cur_stage FROM Subject WHERE id_subject=" + idSubject)[0];
 
 
         ChangeOneMainWork(con, idSubject, row.Field<long>("con_stage"), "con");
