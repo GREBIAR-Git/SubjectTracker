@@ -25,7 +25,7 @@ public class TableSubject : Subject
         CountPra = pra;
     }
 
-    public static string[] DefaultComboBox { get; set; } = { "—", "Не сделано", "Сделано", "Сдано" };
+    public static string[] DefaultComboBox { get; set; } = ["—", "Не сделано", "Сделано", "Сдано"];
 
     int DoneLab { get; }
 

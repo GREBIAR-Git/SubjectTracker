@@ -3,16 +3,9 @@ using System.Collections.Generic;
 
 namespace SubjectTracker.GitSaves;
 
-internal class CommitData
+internal class CommitData(string name, List<string> changes, DateTime date)
 {
-    public CommitData(string name, List<string> changes, DateTime date)
-    {
-        Name = name;
-        Changes = changes;
-        Date = date;
-    }
-
-    public string Name { get; }
-    public List<string> Changes { get; }
-    public DateTime Date { get; }
+    public string Name { get; } = name;
+    public List<string> Changes { get; } = changes;
+    public DateTime Date { get; } = date;
 }

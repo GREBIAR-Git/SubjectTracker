@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Globalization;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
@@ -55,11 +57,11 @@ public class ViewModelMain : ViewModelBase
 
     public ViewModelMain()
     {
-        tableWithSubject = new();
-        tableWithWorks = new();
+        tableWithSubject = [];
+        tableWithWorks = [];
         addedSubject = new();
         db = new();
-        Changes = new();
+        Changes = [];
         Git = new();
         visibility = new();
         db.Initialize();
@@ -207,10 +209,8 @@ public class ViewModelMain : ViewModelBase
                     byte[] file;
                     using (var stream = new FileStream(filename, FileMode.Open, FileAccess.Read))
                     {
-                        using (var reader = new BinaryReader(stream))
-                        {
-                            file = reader.ReadBytes((int)stream.Length);
-                        }
+                        using var reader = new BinaryReader(stream);
+                        file = reader.ReadBytes((int)stream.Length);
                     }
 
                     db.LoadFile(SelectedSubject.Name, SelectedWorks.Number,
@@ -362,6 +362,25 @@ public class ViewModelMain : ViewModelBase
         }
     }
 
+    public void InitGit()
+    {
+        List<TableSubject> subjects = db.GeneralInformation();
+        foreach (var subject in subjects)
+        {
+            Changes.Add("ADD " + subject.Name + " " + subject.CountLab + " " + subject.CountPra + " " +
+                        subject.IndexCon + " " + subject.IndexCur);
+        }
+
+        List<string> works = db.WorksInformation();
+
+        Changes.AddRange(works);
+
+        if (Changes.Count > 0)
+        {
+            Git.NewCommit(DateTime.Now.ToString(CultureInfo.InvariantCulture), Changes);
+        }
+    }
+
     public void UpdateVersion()
     {
         db.Reset();
@@ -386,7 +405,7 @@ public class ViewModelMain : ViewModelBase
                 }
                 else if (item[1] == "C")
                 {
-                    db.UpdateConCur(int.Parse(item[2]), int.Parse(item[3]), item[4]);
+                    db.UpdateConCur(int.Parse(item[2]), item[3], item[4]);
                 }
                 else if (item[1] == "WORK")
                 {

@@ -1,26 +1,16 @@
 ﻿namespace SubjectTracker.Models;
 
-public abstract class Subject
+public abstract class Subject(string name, int con, int cur)
 {
-    protected Subject(string name, int con, int cur)
+    protected Subject() : this(string.Empty, 0, 0)
     {
-        Name = name;
-        IndexCon = con;
-        IndexCur = cur;
     }
 
-    protected Subject()
-    {
-        Name = string.Empty;
-        IndexCon = 0;
-        IndexCur = 0;
-    }
+    public string Name { get; set; } = name;
 
-    public string Name { get; set; }
+    public int IndexCon { get; set; } = con;
 
-    public int IndexCon { get; set; }
-
-    public int IndexCur { get; set; }
+    public int IndexCur { get; set; } = cur;
 
     public bool BoolCon
     {

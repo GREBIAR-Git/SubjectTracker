@@ -8,7 +8,7 @@ internal class Branch : IComparable<Branch>
     public Branch(string nameBranch, string nameCommit = "Initial commit", List<string>? dataCommit = null,
         Branch? prev = null, Commit? prevCommit = null)
     {
-        dataCommit ??= new();
+        dataCommit ??= [];
         Name = nameBranch;
         First = new(nameCommit, dataCommit, prevCommit);
         Prev = prev;

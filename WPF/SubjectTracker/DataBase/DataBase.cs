@@ -15,7 +15,7 @@ public class DataBase
 
     public DataBase()
     {
-        string nameDb = "SubjectTracker.db";
+        const string nameDb = "SubjectTracker.db";
         pathDB = Environment.GetFolderPath(Environment.SpecialFolder.Personal) + "\\" + nameDb;
     }
 
@@ -30,8 +30,8 @@ public class DataBase
             {
                 Connection = connection,
 
-                CommandText = "CREATE TABLE IF NOT EXISTS View(" +
-                              "id_view INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
+                CommandText = "CREATE TABLE IF NOT EXISTS Type(" +
+                              "id_type INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
                               "name TEXT NOT NULL);" +
                               "CREATE TABLE IF NOT EXISTS Stage(" +
                               "id_stage INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
@@ -48,14 +48,14 @@ public class DataBase
                               "number INTEGER NOT NULL," +
                               "file BLOB NULL," +
                               "id_stage INTEGER NOT NULL," +
-                              "id_view INTEGER NOT NULL," +
+                              "id_type INTEGER NOT NULL," +
                               "id_subject INTEGER NOT NULL," +
                               "FOREIGN KEY(id_stage) REFERENCES Stage(id_stage) ON DELETE CASCADE," +
                               "FOREIGN KEY(id_subject) REFERENCES Subject(id_subject) ON DELETE CASCADE," +
-                              "FOREIGN KEY(id_view) REFERENCES View(id_view) ON DELETE CASCADE);"
+                              "FOREIGN KEY(id_type) REFERENCES Type(id_type) ON DELETE CASCADE);"
             };
             command.ExecuteNonQuery();
-            Insert(connection, "View", "name", "'Лабораторная'", "'Практическая'");
+            Insert(connection, "Type", "name", "'Лабораторная'", "'Практическая'");
             Insert(connection, "Stage", "name", "'—'", "'Не сделано'", "'Сделано'", "'Сдано'");
         }
     }
@@ -77,6 +77,22 @@ public class DataBase
         return false;
     }
 
+    public void DeleteSubject(string name)
+    {
+        using SQLiteConnection connection = new("Data Source = " + pathDB);
+        connection.Open();
+        string idSubject = Query(connection, "SELECT id_subject FROM Subject WHERE name='" + name + "'")[0]
+            .ItemArray[0].ToString();
+        SQLiteCommand command = new()
+        {
+            Connection = connection,
+            CommandText = "DELETE FROM Subject WHERE name='" + name + "'"
+        };
+        command.ExecuteNonQuery();
+        command.CommandText = "DELETE FROM Works WHERE id_subject=" + idSubject;
+        command.ExecuteNonQuery();
+    }
+
     static void InsertWorks(SQLiteConnection connection, string view, string name, int count)
     {
         InsertWorks(connection, view, name, 1, count + 1);
@@ -84,7 +100,7 @@ public class DataBase
 
     static void InsertWorks(SQLiteConnection connection, string view, string name, int from, int to)
     {
-        string idView = Query(connection, "SELECT * FROM View WHERE name='" + view + "'")[0].ItemArray[0].ToString();
+        string idView = Query(connection, "SELECT * FROM Type WHERE name='" + view + "'")[0].ItemArray[0].ToString();
         string idSubject = Query(connection, "SELECT * FROM Subject WHERE name='" + name + "'")[0].ItemArray[0]
             .ToString();
         string[] values = new string[to - from];
@@ -95,7 +111,7 @@ public class DataBase
             i++;
         }
 
-        Insert(connection, "Works", "number,id_stage,id_view,id_subject", values);
+        Insert(connection, "Works", "number,id_stage,id_type,id_subject", values);
     }
 
     static void Insert(SQLiteConnection connection, string table, string name, params string[] values)
@@ -155,7 +171,7 @@ public class DataBase
 
     public List<TableSubject> GeneralInformation()
     {
-        List<TableSubject> info = new();
+        List<TableSubject> info = [];
         using SQLiteConnection connection = new("Data Source = " + pathDB);
         connection.Open();
         DataRowCollection allName = Query(connection, "SELECT id_subject,name,con_stage,cur_stage FROM Subject");
@@ -177,18 +193,44 @@ public class DataBase
         return info;
     }
 
+    public List<string> WorksInformation()
+    {
+        List<string> info = [];
+        using SQLiteConnection connection = new("Data Source = " + pathDB);
+        connection.Open();
+        DataRowCollection rows = Query(connection,
+            "SELECT s.name as sn, w.number, w.id_stage, t.name as tn FROM Works w JOIN Subject s JOIN Type t");
+
+        foreach (DataRow row in rows)
+        {
+            long idStage = row.Field<long>("id_stage");
+            if (idStage > 2)
+            {
+                string subjectName = row.Field<string>("sn");
+
+                long number = row.Field<long>("number");
+
+                string typeName = row.Field<string>("tn");
+
+                info.Add("UPDATE WORK " + subjectName + " " + number + " " + typeName + " " + idStage);
+            }
+        }
+
+        return info;
+    }
+
     static int CountDoneSubject(SQLiteConnection connection, out int countAll, string name, string type)
     {
         DataRowCollection all = AllWorks(connection, name, type);
         countAll = all.Count;
 
-        return all.Cast<DataRow>().Count(row => row[0].ToString() == "Сдано");
+        return all.Cast<DataRow>().Count(row => row[1].ToString() == "Сдано");
     }
 
     static DataRowCollection AllWorks(SQLiteConnection connection, string name, string type)
     {
         return Query(connection,
-            "SELECT w.id_works, st.name, w.file IS NOT NULL FROM Works w JOIN View v USING(id_view) JOIN Subject su USING(id_subject) JOIN Stage st USING(id_stage) WHERE v.name='" +
+            "SELECT w.id_works, st.name, w.file IS NOT NULL FROM Works w JOIN Type v USING(id_type) JOIN Subject su USING(id_subject) JOIN Stage st USING(id_stage) WHERE v.name='" +
             type + "' AND su.name='" + name + "'");
     }
 
@@ -231,11 +273,11 @@ public class DataBase
     static void ChangeCountWorks(SQLiteConnection connection, string idSubject, string nameSubject, int newCount,
         string nameType)
     {
-        string idView = Query(connection, "SELECT id_view FROM View WHERE name='" + nameType + "'")[0].ItemArray[0]
+        string idView = Query(connection, "SELECT id_type FROM Type WHERE name='" + nameType + "'")[0].ItemArray[0]
             .ToString();
 
         int count = Query(connection,
-            "SELECT * FROM Works WHERE id_subject=" + idSubject + " AND id_view='" + idView + "'").Count;
+            "SELECT * FROM Works WHERE id_subject=" + idSubject + " AND id_type='" + idView + "'").Count;
         SQLiteCommand command = new()
         {
             Connection = connection
@@ -246,7 +288,7 @@ public class DataBase
             if (newCount < count)
             {
                 command.CommandText = "DELETE FROM Works WHERE id_subject=" + idSubject + " AND number>" + newCount +
-                                      " AND id_view=" + idView;
+                                      " AND id_type=" + idView;
                 command.ExecuteNonQuery();
             }
             else
@@ -273,22 +315,6 @@ public class DataBase
 
             UpdateConCur(value, int.Parse(idSubject), type + "_stage");
         }
-    }
-
-    public void DeleteSubject(string name)
-    {
-        using SQLiteConnection connection = new("Data Source = " + pathDB);
-        connection.Open();
-        string idSubject = Query(connection, "SELECT id_subject FROM Subject WHERE name='" + name + "'")[0]
-            .ItemArray[0].ToString();
-        SQLiteCommand command = new()
-        {
-            Connection = connection,
-            CommandText = "DELETE FROM Subject WHERE name='" + name + "'"
-        };
-        command.ExecuteNonQuery();
-        command.CommandText = "DELETE FROM Works WHERE id_subject=" + idSubject;
-        command.ExecuteNonQuery();
     }
 
     public DataRowCollection InfoWork(string name, string type)
@@ -326,10 +352,10 @@ public class DataBase
         };
 
         string idSubject = "(SELECT id_subject FROM Subject WHERE name='" + name + "')";
-        string idView = "(SELECT id_view FROM View WHERE name='" + type + "')";
+        string idView = "(SELECT id_type FROM Type WHERE name='" + type + "')";
 
         command.CommandText = "UPDATE Works SET id_stage=" + idStage + " WHERE id_subject=" + idSubject +
-                              " AND number=" + number + " AND id_view=" + idView;
+                              " AND number=" + number + " AND id_type=" + idView;
         command.ExecuteNonQuery();
     }
 
@@ -338,12 +364,12 @@ public class DataBase
         using SQLiteConnection connection = new("Data Source = " + pathDB);
         connection.Open();
         string idSubject = "(SELECT id_subject FROM Subject WHERE name='" + name + "')";
-        string idView = "(SELECT id_view FROM View WHERE name='" + type + "')";
+        string idView = "(SELECT id_type FROM Type WHERE name='" + type + "')";
         SQLiteCommand command = new()
         {
             Connection = connection,
             CommandText = "UPDATE Works SET file=@File WHERE id_subject=" + idSubject +
-                          " AND number=" + number + " AND id_view=" + idView
+                          " AND number=" + number + " AND id_type=" + idView
         };
         command.Parameters.Add("@File", DbType.Binary, file.Length).Value = file;
 

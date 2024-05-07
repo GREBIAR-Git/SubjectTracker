@@ -78,7 +78,7 @@ public class Git
 
         void VisualizationBranch(ref int i, Branch branch, int lastBranch)
         {
-            List<Branch> branchList = new();
+            List<Branch> branchList = [];
             Commit? commit = branch.First;
             bool firstRow = true;
             int f = branch.CountPrev();
@@ -95,18 +95,18 @@ public class Git
                 f++;
             }
 
-            Branch[] sortBranchs = branchList.ToArray();
-            Array.Sort(sortBranchs);
+            Branch[] sortBranches = branchList.ToArray();
+            Array.Sort(sortBranches);
 
             int lastI = i;
             i++;
-            foreach (Branch branch1 in sortBranchs)
+            foreach (Branch branch1 in sortBranches)
             {
                 VisualizationBranch(ref i, branch1, lastI);
             }
         }
 
-        void AddButton(int i, int f, Grid lines, Commit commit, double width, double height, ref bool firstRow,
+        void AddButton(int i, int f, Panel lines, Commit commit, double width, double height, ref bool firstRow,
             int lastBranch)
         {
             Color additional = (Color)ColorConverter.ConvertFromString("#335e8f");
@@ -190,7 +190,7 @@ public class Git
 
         void VisualizationBranch(ref int i, Branch branch, int lastBranch)
         {
-            List<Branch> branchList = new();
+            List<Branch> branchList = [];
             Commit? commit = branch.First;
             bool firstRow = true;
             int f = branch.CountPrev();
@@ -218,7 +218,7 @@ public class Git
             }
         }
 
-        void AddButton(int i, int f, Grid main, Grid lines, Commit commit, double width, double height,
+        void AddButton(int i, int f, Panel main, Panel lines, Commit commit, double width, double height,
             ref bool firstRow, int lastBranch)
         {
             Color additional = (Color)ColorConverter.ConvertFromString("#335e8f");
@@ -280,10 +280,7 @@ public class Git
 
     List<List<CommitData>> AllCommit()
     {
-        List<List<CommitData>> allCommit = new()
-        {
-            AllCommitBranch(First)
-        };
+        List<List<CommitData>> allCommit = [AllCommitBranch(First)];
 
         foreach (List<Branch> branches in branchs.Values)
         {
@@ -297,10 +294,10 @@ public class Git
 
         static List<CommitData> AllCommitBranch(Branch branch, int countPrev = 0)
         {
-            List<CommitData> commitBranch = new();
+            List<CommitData> commitBranch = [];
             for (int i = 0; i < countPrev; i++)
             {
-                commitBranch.Add(new("Empty", new(), DateTime.Now));
+                commitBranch.Add(new("Empty", [], DateTime.Now));
             }
 
             Commit? commit = branch.First;
@@ -317,11 +314,8 @@ public class Git
 
     public int NewCommit(string name, List<string> data)
     {
-        List<string> copy = new();
-        foreach (string item in data)
-        {
-            copy.Add(item);
-        }
+        List<string> copy = [];
+        copy.AddRange(data);
 
         if (CurrentCommit.Next == null)
         {
@@ -339,7 +333,7 @@ public class Git
         }
 
         CurrentBranch = new("branch " + name, name, copy, CurrentBranch, CurrentCommit);
-        branchs.Add(CurrentCommit, new() { CurrentBranch });
+        branchs.Add(CurrentCommit, [CurrentBranch]);
         CurrentCommit = CurrentBranch.First;
         return CurrentCommit.GetHashCode();
     }
@@ -347,9 +341,9 @@ public class Git
 
     public List<string> GetHistoryData()
     {
-        List<string> history = new();
+        List<string> history = [];
         Commit? commit = CurrentCommit;
-        List<List<string>> temp = new();
+        List<List<string>> temp = [];
         while (commit != null)
         {
             temp.Add(commit.Data.Changes);

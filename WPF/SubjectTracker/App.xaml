@@ -4,7 +4,7 @@
              xmlns:local="clr-namespace:SubjectTracker"
              StartupUri="View/MainWindow.xaml">
     <Application.Resources>
-        <Style x:Key="TBlStandart" TargetType="{x:Type TextBlock}">
+        <Style x:Key="TBlStandard" TargetType="{x:Type TextBlock}">
             <Setter Property="TextAlignment" Value="Center"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="Margin" Value="0,5,0,2.5"/>
@@ -13,7 +13,7 @@
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="Foreground" Value="White"/>
         </Style>
-        <Style x:Key="TBStandart" TargetType="{x:Type TextBox}">
+        <Style x:Key="TBStandard" TargetType="{x:Type TextBox}">
             <Setter Property="TextAlignment" Value="Center"/>
             <Setter Property="Height" Value="19"/>
             <Setter Property="BorderThickness" Value="0"/>
@@ -31,7 +31,7 @@
                 </Style>
             </Style.Resources>
         </Style>
-        <Style x:Key="CBStandart" TargetType="{x:Type CheckBox}">
+        <Style x:Key="CBStandard" TargetType="{x:Type CheckBox}">
             <Setter Property="Margin" Value="0,2.5,0,5"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="HorizontalAlignment" Value="Center"/>
@@ -42,7 +42,7 @@
                 </Style>
             </Style.Resources>
         </Style>
-        <Style x:Key="DGStandart" TargetType="{x:Type DataGrid}">
+        <Style x:Key="DGStandard" TargetType="{x:Type DataGrid}">
             <Setter Property="Background" Value="#8daacc"/>
             <Setter Property="RowBackground" Value="#8daacc"/>
             <Setter Property="AutoGenerateColumns" Value="False"/>
@@ -54,7 +54,7 @@
             <Setter Property="RowHeaderWidth" Value="0"/>
             <Setter Property="AlternatingRowBackground" Value="#8daacc"/>
         </Style>
-        <Style x:Key="CoBStandart" TargetType="{x:Type ComboBox}">
+        <Style x:Key="CoBStandard" TargetType="{x:Type ComboBox}">
             <Setter Property="FontFamily" Value="Serif"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="FontWeight" Value="Bold"/>
@@ -101,14 +101,14 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <Style x:Key="MIStandart" TargetType="{x:Type MenuItem}">
+        <Style x:Key="MIStandard" TargetType="{x:Type MenuItem}">
             <Setter Property="VerticalAlignment" Value="Bottom"/>
             <Setter Property="FontFamily" Value="Serif"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="Height" Value="20"/>
         </Style>
-        <Style x:Key="BuStandart" TargetType="{x:Type Button}">
+        <Style x:Key="BuStandard" TargetType="{x:Type Button}">
             <Style.Resources>
                 <Style TargetType="Border">
                     <Setter Property="CornerRadius" Value="3"/>
@@ -164,7 +164,7 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-        <Style x:Key="BuStandartWB" TargetType="{x:Type Button}">
+        <Style x:Key="BuStandardWB" TargetType="{x:Type Button}">
             <Style.Setters>
                 <Setter Property="Background" Value="#335e8f"/>
                 <Setter Property="FontFamily" Value="Serif"/>

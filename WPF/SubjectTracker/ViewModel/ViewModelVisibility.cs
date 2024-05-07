@@ -14,18 +14,11 @@ public class ViewModelVisibility : ViewModelBase
 
     ICommand? changeWorkPanelVisibility;
 
-    Visibility updatePanelVisibility;
+    Visibility updatePanelVisibility = Visibility.Collapsed;
 
-    GridLength workPanel;
+    GridLength workPanel = new(0, GridUnitType.Pixel);
 
-    Visibility workPanelVisibility;
-
-    public ViewModelVisibility()
-    {
-        updatePanelVisibility = Visibility.Collapsed;
-        workPanel = new(0, GridUnitType.Pixel);
-        workPanelVisibility = Visibility.Collapsed;
-    }
+    Visibility workPanelVisibility = Visibility.Collapsed;
 
     public GridLength WorkPanel
     {

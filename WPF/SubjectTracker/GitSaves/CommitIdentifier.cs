@@ -1,13 +1,7 @@
 ﻿namespace SubjectTracker.GitSaves;
 
-internal class CommitIdentifier
+internal class CommitIdentifier(int hashCode, string name)
 {
-    public CommitIdentifier(int hashCode, string name)
-    {
-        HashCode = hashCode;
-        Name = name;
-    }
-
-    public int HashCode { get; }
-    public string Name { get; }
+    public int HashCode { get; } = hashCode;
+    public string Name { get; } = name;
 }

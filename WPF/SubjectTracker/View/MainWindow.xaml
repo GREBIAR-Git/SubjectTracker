@@ -51,9 +51,9 @@
                             </Style.Triggers>
                         </Style>
                     </MenuItem.Style>
-                    <MenuItem IsChecked="True" IsCheckable="True" Header="Верхнее меню" Style="{StaticResource MIStandart}" Command="{Binding Visibility.ChangeAddPanelVisibility}" />
-                    <MenuItem IsChecked="True" Visibility="{Binding Visibility.UpdatePanelVisibility}" Header="Нижнее меню" Style="{StaticResource MIStandart}" Command="{Binding Visibility.ChangeUpdatePanelVisibility}"/>
-                    <MenuItem IsChecked="True" Visibility="{Binding Visibility.WorkPanelVisibility}" Header="Правое меню" Style="{StaticResource MIStandart}" Command="{Binding Visibility.ChangeWorkPanelVisibility}" />
+                    <MenuItem IsChecked="True" IsCheckable="True" Header="Верхнее меню" Style="{StaticResource MIStandard}" Command="{Binding Visibility.ChangeAddPanelVisibility}" />
+                    <MenuItem IsChecked="True" Visibility="{Binding Visibility.UpdatePanelVisibility}" Header="Нижнее меню" Style="{StaticResource MIStandard}" Command="{Binding Visibility.ChangeUpdatePanelVisibility}"/>
+                    <MenuItem IsChecked="True" Visibility="{Binding Visibility.WorkPanelVisibility}" Header="Правое меню" Style="{StaticResource MIStandard}" Command="{Binding Visibility.ChangeWorkPanelVisibility}" />
                 </MenuItem>
             </Menu>
             <Grid Grid.Row="1" Grid.Column="0" Visibility="{Binding Visibility.AddPanelVisibility}" Background="#8daacc">
@@ -69,19 +69,19 @@
                     <RowDefinition Height="35"/>
                     <RowDefinition Height="25"/>
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Grid.Column="0" TextWrapping="WrapWithOverflow" Text="Название предмета" Style="{StaticResource TBlStandart}"/>
-                <TextBlock Grid.Row="0" Grid.Column="1" TextWrapping="WrapWithOverflow" Text="Количество лабораторных" Style="{StaticResource TBlStandart}"/>
-                <TextBlock Grid.Row="0" Grid.Column="2" TextWrapping="WrapWithOverflow" Text="Количество практических" Style="{StaticResource TBlStandart}"/>
-                <TextBlock Grid.Row="0" Grid.Column="3" TextWrapping="Wrap" Text="Контрольная" Style="{StaticResource TBlStandart}"/>
-                <TextBlock Grid.Row="0" Grid.Column="4" TextWrapping="Wrap" Text="Курсовая" Style="{StaticResource TBlStandart}"/>
-                <TextBox Grid.Row="1" Grid.Column="0" Text="{Binding AddedSubject.Name}" Style="{StaticResource TBStandart}"/>
-                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding AddedSubject.CountLab}" Style="{StaticResource TBStandart}"/>
-                <TextBox Grid.Row="1" Grid.Column="2" Text="{Binding AddedSubject.CountPra}" Style="{StaticResource TBStandart}"/>
-                <CheckBox Grid.Row="1" Grid.Column="3" IsChecked="{Binding AddedSubject.BoolCon}" Style="{StaticResource CBStandart}"/>
-                <CheckBox Grid.Row="1" Grid.Column="4" IsChecked="{Binding AddedSubject.BoolCur}" Style="{StaticResource CBStandart}"/>
-                <Button Grid.Row="0" Grid.Column="5" Grid.RowSpan="2" Margin="15,15,15,15" Content="Добавить" Style="{StaticResource BuStandart}" Command="{Binding AddSubject}"/>
+                <TextBlock Grid.Row="0" Grid.Column="0" TextWrapping="WrapWithOverflow" Text="Название предмета" Style="{StaticResource TBlStandard}"/>
+                <TextBlock Grid.Row="0" Grid.Column="1" TextWrapping="WrapWithOverflow" Text="Количество лабораторных" Style="{StaticResource TBlStandard}"/>
+                <TextBlock Grid.Row="0" Grid.Column="2" TextWrapping="WrapWithOverflow" Text="Количество практических" Style="{StaticResource TBlStandard}"/>
+                <TextBlock Grid.Row="0" Grid.Column="3" TextWrapping="Wrap" Text="Контрольная" Style="{StaticResource TBlStandard}"/>
+                <TextBlock Grid.Row="0" Grid.Column="4" TextWrapping="Wrap" Text="Курсовая" Style="{StaticResource TBlStandard}"/>
+                <TextBox Grid.Row="1" Grid.Column="0" Text="{Binding AddedSubject.Name}" Style="{StaticResource TBStandard}"/>
+                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding AddedSubject.CountLab}" Style="{StaticResource TBStandard}"/>
+                <TextBox Grid.Row="1" Grid.Column="2" Text="{Binding AddedSubject.CountPra}" Style="{StaticResource TBStandard}"/>
+                <CheckBox Grid.Row="1" Grid.Column="3" IsChecked="{Binding AddedSubject.BoolCon}" Style="{StaticResource CBStandard}"/>
+                <CheckBox Grid.Row="1" Grid.Column="4" IsChecked="{Binding AddedSubject.BoolCur}" Style="{StaticResource CBStandard}"/>
+                <Button Grid.Row="0" Grid.Column="5" Grid.RowSpan="2" Margin="15,15,15,15" Content="Добавить" Style="{StaticResource BuStandard}" Command="{Binding AddSubject}"/>
             </Grid>
-            <DataGrid Grid.Row="2" Grid.Column="0" ItemsSource="{Binding TableWithSubject}" SelectedItem="{Binding SelectedSubject}" Style="{StaticResource DGStandart}" >
+            <DataGrid Grid.Row="2" Grid.Column="0" ItemsSource="{Binding TableWithSubject}" SelectedItem="{Binding SelectedSubject}" Style="{StaticResource DGStandard}" >
                 <DataGrid.Resources>
                     <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
                         <Setter Property="Background" Value="#4a76a8" />
@@ -99,7 +99,7 @@
                     <DataGridTemplateColumn Header="Название" Width="24.4*">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <Button Content="{Binding Name}" Style="{StaticResource BuStandart}" Command="{Binding ElementName=root, Path=DataContext.OpenUpdatePanel}"/>
+                                <Button Content="{Binding Name}" Style="{StaticResource BuStandard}" Command="{Binding ElementName=root, Path=DataContext.OpenUpdatePanel}"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
@@ -107,7 +107,7 @@
                     <DataGridTemplateColumn Header="Лабораторные" Width="16.4*">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <Button Content="{Binding Lab}" Style="{StaticResource BuStandart}" Command="{Binding ElementName=root, Path=DataContext.OpenLabs}"/>
+                                <Button Content="{Binding Lab}" Style="{StaticResource BuStandard}" Command="{Binding ElementName=root, Path=DataContext.OpenLabs}"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
@@ -115,7 +115,7 @@
                     <DataGridTemplateColumn Header="Практические" Width="16.4*">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <Button Content="{Binding Pra}" Style="{StaticResource BuStandart}" Command="{Binding ElementName=root, Path=DataContext.OpenPra}"/>
+                                <Button Content="{Binding Pra}" Style="{StaticResource BuStandard}" Command="{Binding ElementName=root, Path=DataContext.OpenPra}"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
@@ -123,7 +123,7 @@
                     <DataGridTemplateColumn Header="Контрольная" Width="21.4*">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <ComboBox ItemsSource="{Binding DefaultComboBox}" SelectedItem="{Binding Con, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource CoBStandart}" DropDownOpened="ComboBox_DropDownOpened">
+                                <ComboBox ItemsSource="{Binding DefaultComboBox}" SelectedItem="{Binding Con, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource CoBStandard}" DropDownOpened="ComboBox_DropDownOpened">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="SelectionChanged">
                                             <i:InvokeCommandAction Command="{Binding ElementName=root, Path=DataContext.ChangeConIndex}" />
@@ -137,7 +137,7 @@
                     <DataGridTemplateColumn Header="Курсовая" Width="21.4*">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <ComboBox ItemsSource="{Binding DefaultComboBox}" SelectedItem="{Binding Cur, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource CoBStandart}" DropDownOpened="ComboBox_DropDownOpened">
+                                <ComboBox ItemsSource="{Binding DefaultComboBox}" SelectedItem="{Binding Cur, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource CoBStandard}" DropDownOpened="ComboBox_DropDownOpened">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="SelectionChanged">
                                             <i:InvokeCommandAction Command="{Binding ElementName=root, Path=DataContext.ChangeCurIndex}" />
@@ -162,18 +162,18 @@
                     <RowDefinition Height="35"/>
                     <RowDefinition Height="30"/>
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Grid.Column="0" TextWrapping="WrapWithOverflow" Text="Название предмета" Style="{StaticResource TBlStandart}"/>
-                <TextBlock Grid.Row="0" Grid.Column="1" TextWrapping="WrapWithOverflow" Text="Количество лабораторных" Style="{StaticResource TBlStandart}"/>
-                <TextBlock Grid.Row="0" Grid.Column="2" TextWrapping="WrapWithOverflow" Text="Количество практических" Style="{StaticResource TBlStandart}"/>
-                <TextBlock Grid.Row="0" Grid.Column="3" TextWrapping="Wrap" Text="Контрольная" Style="{StaticResource TBlStandart}"/>
-                <TextBlock Grid.Row="0" Grid.Column="4" TextWrapping="Wrap" Text="Курсовая" Style="{StaticResource TBlStandart}"/>
-                <TextBlock Grid.Row="1" Grid.Column="0" TextWrapping="Wrap" Text="{Binding UpdatedSubject.Name}" Style="{StaticResource TBlStandart}"/>
-                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding UpdatedSubject.CountLab}" Style="{StaticResource TBStandart}"/>
-                <TextBox Grid.Row="1" Grid.Column="2" Text="{Binding UpdatedSubject.CountPra}" Style="{StaticResource TBStandart}"/>
-                <CheckBox Grid.Row="1" Grid.Column="3" IsChecked="{Binding UpdatedSubject.BoolCon, Mode=TwoWay}" Style="{StaticResource CBStandart}"/>
-                <CheckBox Grid.Row="1" Grid.Column="4" IsChecked="{Binding UpdatedSubject.BoolCur,Mode=TwoWay}" Style="{StaticResource CBStandart}"/>
-                <Button Grid.Row="0" Grid.Column="5" Margin="5,5,5,5" Content="Изменить" Style="{StaticResource BuStandart}" Command="{Binding ChangeSubject}"/>
-                <Button Grid.Row="1" Grid.Column="5" Margin="5,0,5,5" Content="Удалить" Style="{StaticResource BuStandart}" Command="{Binding DeleteSubject}"/>
+                <TextBlock Grid.Row="0" Grid.Column="0" TextWrapping="WrapWithOverflow" Text="Название предмета" Style="{StaticResource TBlStandard}"/>
+                <TextBlock Grid.Row="0" Grid.Column="1" TextWrapping="WrapWithOverflow" Text="Количество лабораторных" Style="{StaticResource TBlStandard}"/>
+                <TextBlock Grid.Row="0" Grid.Column="2" TextWrapping="WrapWithOverflow" Text="Количество практических" Style="{StaticResource TBlStandard}"/>
+                <TextBlock Grid.Row="0" Grid.Column="3" TextWrapping="Wrap" Text="Контрольная" Style="{StaticResource TBlStandard}"/>
+                <TextBlock Grid.Row="0" Grid.Column="4" TextWrapping="Wrap" Text="Курсовая" Style="{StaticResource TBlStandard}"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" TextWrapping="Wrap" Text="{Binding UpdatedSubject.Name}" Style="{StaticResource TBlStandard}"/>
+                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding UpdatedSubject.CountLab}" Style="{StaticResource TBStandard}"/>
+                <TextBox Grid.Row="1" Grid.Column="2" Text="{Binding UpdatedSubject.CountPra}" Style="{StaticResource TBStandard}"/>
+                <CheckBox Grid.Row="1" Grid.Column="3" IsChecked="{Binding UpdatedSubject.BoolCon, Mode=TwoWay}" Style="{StaticResource CBStandard}"/>
+                <CheckBox Grid.Row="1" Grid.Column="4" IsChecked="{Binding UpdatedSubject.BoolCur,Mode=TwoWay}" Style="{StaticResource CBStandard}"/>
+                <Button Grid.Row="0" Grid.Column="5" Margin="5,5,5,5" Content="Изменить" Style="{StaticResource BuStandard}" Command="{Binding ChangeSubject}"/>
+                <Button Grid.Row="1" Grid.Column="5" Margin="5,0,5,5" Content="Удалить" Style="{StaticResource BuStandard}" Command="{Binding DeleteSubject}"/>
             </Grid>
             <Grid Grid.Row="1" Grid.Column="1" Grid.RowSpan="4" Background="#8daacc">
                 <Grid.ColumnDefinitions>
@@ -185,16 +185,16 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="100*"/>
                 </Grid.RowDefinitions>
-                <Button Grid.Row="0" Grid.RowSpan="3" Grid.Column="0" Margin="0" BorderThickness="0"  Padding="0" Style="{StaticResource BuStandartWB}" Command="{Binding Visibility.ChangeWorkPanelVisibility}">
+                <Button Grid.Row="0" Grid.RowSpan="3" Grid.Column="0" Margin="0" BorderThickness="0"  Padding="0" Style="{StaticResource BuStandardWB}" Command="{Binding Visibility.ChangeWorkPanelVisibility}">
                     <Grid VerticalAlignment="Center">
                         <Polygon Fill="White" Points="1, 7, 6, 0, 6, 14" />
                         <Polygon Fill="White" Points="1, 32, 6, 25, 6, 39" />
                         <Polygon Fill="White" Points="1, 57, 6, 50, 6, 64" />
                     </Grid>
                 </Button>
-                <TextBlock Grid.Row="0" Grid.Column="1" Margin="2,5,2,0" Text="{Binding SelectedSubject.Name, StringFormat=Название предмета: \{0\}}" TextWrapping="WrapWithOverflow" Style="{StaticResource TBlStandart}"/>
-                <TextBlock Grid.Row="1" Grid.Column="1" Margin="2,0,2,5" Text="{Binding SelectionTypeWork, StringFormat=Тип предмета: \{0\}}" TextWrapping="WrapWithOverflow" Style="{StaticResource TBlStandart}"/>
-                <DataGrid Grid.Row="2" Grid.Column="1" ItemsSource="{Binding TableWithWorks}" SelectedItem="{Binding SelectedWorks}" Style="{StaticResource DGStandart}">
+                <TextBlock Grid.Row="0" Grid.Column="1" Margin="2,5,2,0" Text="{Binding SelectedSubject.Name, StringFormat=Название предмета: \{0\}}" TextWrapping="WrapWithOverflow" Style="{StaticResource TBlStandard}"/>
+                <TextBlock Grid.Row="1" Grid.Column="1" Margin="2,0,2,5" Text="{Binding SelectionTypeWork, StringFormat=Тип предмета: \{0\}}" TextWrapping="WrapWithOverflow" Style="{StaticResource TBlStandard}"/>
+                <DataGrid Grid.Row="2" Grid.Column="1" ItemsSource="{Binding TableWithWorks}" SelectedItem="{Binding SelectedWorks}" Style="{StaticResource DGStandard}">
                     <DataGrid.Resources>
                         <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
                             <Setter Property="Background" Value="#4a76a8" />
@@ -212,14 +212,14 @@
                         <DataGridTemplateColumn Header="№" Width="20*">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Number}" Style="{StaticResource TBlStandart}"/>
+                                    <TextBlock Text="{Binding Number}" Style="{StaticResource TBlStandard}"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                         <DataGridTemplateColumn Header="Стадия" Width="60*">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <ComboBox ItemsSource="{Binding DefaultComboBox}" SelectedItem="{Binding Stage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource CoBStandart}">
+                                    <ComboBox ItemsSource="{Binding DefaultComboBox}" SelectedItem="{Binding Stage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource CoBStandard}">
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="SelectionChanged">
                                                 <i:InvokeCommandAction Command="{Binding ElementName=root, Path=DataContext.ChangeWorkIndex}" />
@@ -237,8 +237,8 @@
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
-                                        <Button Grid.Column="0" Content="&#129095;" FontSize="16" Grid.ColumnSpan="{Binding IsLoadFileColumnSpan}" Style="{StaticResource BuStandart}" Command="{Binding ElementName=root, Path=DataContext.LoadFile}"/>
-                                        <Button Grid.Column="1" Content="&#129093;" FontSize="16" Visibility="{Binding IsLoadFile}" Style="{StaticResource BuStandart}" Command="{Binding ElementName=root, Path=DataContext.UploadFile}"/>
+                                        <Button Grid.Column="0" Content="&#129095;" FontSize="16" Grid.ColumnSpan="{Binding IsLoadFileColumnSpan}" Style="{StaticResource BuStandard}" Command="{Binding ElementName=root, Path=DataContext.LoadFile}"/>
+                                        <Button Grid.Column="1" Content="&#129093;" FontSize="16" Visibility="{Binding IsLoadFile}" Style="{StaticResource BuStandard}" Command="{Binding ElementName=root, Path=DataContext.UploadFile}"/>
                                     </Grid>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
@@ -247,13 +247,14 @@
                 </DataGrid>
             </Grid>
         </Grid>
-        <Grid x:Name="lines" Grid.Column="0">
+        <Grid x:Name="lines" Margin="0 20 0 0" Grid.Column="0">
 
         </Grid>
-        <Grid x:Name="settings" Grid.Column="0" Visibility="Collapsed">
+        <Grid x:Name="settings" Grid.Column="0" Margin="0 20 0 0" Visibility="Collapsed">
         </Grid>
-        <Button Width="20" Height="20" Margin="0,2,3,0" HorizontalAlignment="Right" VerticalAlignment="Top" Grid.ColumnSpan="2" Style="{StaticResource BuStandart}" Click="OpenSettings_Click">
+        <Button Width="20" Height="20" Margin="0,2,3,0" HorizontalAlignment="Right" VerticalAlignment="Top" Grid.ColumnSpan="2" Style="{StaticResource BuStandard}" Click="OpenSettings_Click">
             <Image Width="20" Height="20" Source="/Resources/Settings.png" />
         </Button>
+
     </Grid>
 </Window>

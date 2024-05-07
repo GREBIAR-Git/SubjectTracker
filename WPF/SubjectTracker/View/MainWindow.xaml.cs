@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -15,6 +16,7 @@ public partial class MainWindow : Window
         viewModel = new();
         InitializeComponent();
         DataContext = viewModel;
+        viewModel.InitGit();
     }
 
     void ComboBox_DropDownOpened(object sender, EventArgs e)
@@ -30,7 +32,7 @@ public partial class MainWindow : Window
     {
         if (Keyboard.IsKeyDown(Key.LeftCtrl) && e.Key == Key.S)
         {
-            viewModel.Git.NewCommit(DateTime.Now.ToString(), viewModel.Changes);
+            viewModel.Git.NewCommit(DateTime.Now.ToString(CultureInfo.InvariantCulture), viewModel.Changes);
             viewModel.Changes.Clear();
         }
     }
@@ -50,6 +52,9 @@ public partial class MainWindow : Window
             table.Visibility = Visibility.Visible;
             settings.Visibility = Visibility.Collapsed;
             lines.Visibility = Visibility.Collapsed;
+            viewModel.Visibility.UpdatePanelVisibility = Visibility.Collapsed;
+            viewModel.Visibility.WorkPanelVisibility = Visibility.Collapsed;
+            viewModel.Visibility.WorkPanel = new(0, GridUnitType.Pixel);
             viewModel.ReadingSubjectDB();
         }
     }

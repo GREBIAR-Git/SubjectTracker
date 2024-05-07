@@ -3,17 +3,9 @@ using System.Windows.Input;
 
 namespace SubjectTracker.Command;
 
-public class RelayCommand : ICommand
+public class RelayCommand(Action<object> execute, Func<object, bool>? canExecute = null)
+    : ICommand
 {
-    readonly Func<object, bool> canExecute;
-    readonly Action<object> execute;
-
-    public RelayCommand(Action<object> execute, Func<object, bool> canExecute = null)
-    {
-        this.execute = execute;
-        this.canExecute = canExecute;
-    }
-
     public event EventHandler CanExecuteChanged
     {
         add => CommandManager.RequerySuggested += value;
