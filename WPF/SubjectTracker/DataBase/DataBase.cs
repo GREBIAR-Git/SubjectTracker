@@ -232,7 +232,7 @@ public class DataBase
     static DataRowCollection AllWorks(SQLiteConnection connection, string name, string type)
     {
         return Query(connection,
-            "SELECT w.id_works, st.name, CASE WHEN w.file IS NULL THEN 0 ELSE w.file END as file, w.number FROM Works w JOIN Type v USING(id_type) JOIN Subject su USING(id_subject) JOIN Stage st USING(id_stage) WHERE v.name='" +
+            "SELECT w.id_works, st.name, CASE WHEN w.file IS NULL THEN 0 ELSE 1 END as file, w.number FROM Works w JOIN Type v USING(id_type) JOIN Subject su USING(id_subject) JOIN Stage st USING(id_stage) WHERE v.name='" +
             type + "' AND su.name='" + name + "'");
     }
 
