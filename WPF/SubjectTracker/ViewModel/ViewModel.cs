@@ -217,7 +217,7 @@ public class ViewModelMain : ViewModelBase
                         SelectionTypeWork, file);
                 }
 
-                ReadingWorkDB(SelectionTypeWork);
+                ReadingWorkDB();
             });
         }
     }
@@ -276,7 +276,7 @@ public class ViewModelMain : ViewModelBase
                     UpdatedSubject.IndexCur);
                 if (Visibility.WorkPanelVisibility == System.Windows.Visibility.Visible)
                 {
-                    ReadingWorkDB(SelectionTypeWork);
+                    ReadingWorkDB();
                 }
 
                 Visibility.UpdatePanelVisibility = System.Windows.Visibility.Collapsed;
@@ -303,12 +303,30 @@ public class ViewModelMain : ViewModelBase
 
     public ICommand OpenLabs
     {
-        get { return openLabs ??= new RelayCommand(obj => { ReadingWorkDB("Лабораторная"); }); }
+        get
+        {
+            return openLabs ??= new RelayCommand(obj =>
+            {
+                Visibility.WorkPanel = new(30, GridUnitType.Star);
+                Visibility.WorkPanelVisibility = System.Windows.Visibility.Visible;
+                SelectionTypeWork = "Лабораторная";
+                ReadingWorkDB();
+            });
+        }
     }
 
     public ICommand OpenPra
     {
-        get { return openPra ??= new RelayCommand(obj => { ReadingWorkDB("Практическая"); }); }
+        get
+        {
+            return openPra ??= new RelayCommand(obj =>
+            {
+                Visibility.WorkPanel = new(30, GridUnitType.Star);
+                Visibility.WorkPanelVisibility = System.Windows.Visibility.Visible;
+                SelectionTypeWork = "Практическая";
+                ReadingWorkDB();
+            });
+        }
     }
 
     public ICommand OpenUpdatePanel
@@ -320,6 +338,8 @@ public class ViewModelMain : ViewModelBase
                 {
                     UpdatedSubject = (TableSubject)SelectedSubject.Clone();
                     Visibility.UpdatePanelVisibility = System.Windows.Visibility.Visible;
+                    Visibility.WorkPanelVisibility = System.Windows.Visibility.Collapsed;
+                    Visibility.WorkPanel = new(0, GridUnitType.Pixel);
                 });
         }
     }
@@ -344,14 +364,11 @@ public class ViewModelMain : ViewModelBase
         }
     }
 
-    void ReadingWorkDB(string type)
+    void ReadingWorkDB()
     {
         TableWithWorks.Clear();
-        Visibility.WorkPanel = new(30, GridUnitType.Star);
-        Visibility.WorkPanelVisibility = System.Windows.Visibility.Visible;
-        SelectionTypeWork = type;
 
-        DataRowCollection rows = db.InfoWork(SelectedSubject.Name, type);
+        DataRowCollection rows = db.InfoWork(SelectedSubject.Name, SelectionTypeWork);
 
         foreach (DataRow row in rows)
         {

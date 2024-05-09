@@ -25,6 +25,11 @@ public partial class MainWindow : Window
         {
             comboBox.IsDropDownOpen = false;
         }
+        else
+        {
+            viewModel.Visibility.WorkPanelVisibility = Visibility.Collapsed;
+            viewModel.Visibility.WorkPanel = new(0, GridUnitType.Pixel);
+        }
     }
 
     void Win_KeyDown(object sender, KeyEventArgs e)
